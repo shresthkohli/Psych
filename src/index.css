@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --psych-yellow: #FFD400;
+    --psych-black: #101010;
+    --psych-dark: #1A1A1A;
+    --psych-white: #FFFFFF;
+    --psych-red: #E62429;
+    --psych-grey: #A3A3A3;
+  }
+
+  body {
+    background-color: #101010;
+    color: #F5F5F0;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.03em;
+  }
+}
+
+/* Halftone Comic Dot Pattern */
+.halftone-bg {
+  background-image: radial-gradient(rgba(255, 212, 0, 0.12) 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
+}
+
+.halftone-bg-subtle {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1.2px, transparent 1.2px);
+  background-size: 14px 14px;
+}
+
+/* Comic diagonal stripes */
+.diagonal-stripes {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 212, 0, 0.08),
+    rgba(255, 212, 0, 0.08) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+}
+
+.diagonal-stripes-danger {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(230, 36, 41, 0.15),
+    rgba(230, 36, 41, 0.15) 12px,
+    transparent 12px,
+    transparent 24px
+  );
+}
+
+/* Web-inspired corner accent */
+.web-corner-tl {
+  position: relative;
+}
+.web-corner-tl::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  border-top: 3px solid #FFD400;
+  border-left: 3px solid #FFD400;
+  pointer-events: none;
+}
+
+.web-corner-br {
+  position: relative;
+}
+.web-corner-br::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  border-bottom: 3px solid #FFD400;
+  border-right: 3px solid #FFD400;
+  pointer-events: none;
+}
+
+/* Brutalist Button & Card Effects */
+.btn-brutal {
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-brutal:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #FFD400;
+}
+
+.btn-brutal:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #FFD400;
+}
+
+.btn-brutal-red:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #E62429;
+}
+
+.btn-brutal-red:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #E62429;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #101010;
+}
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FFD400;
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -17,7 +17,7 @@ export const LandingPage: React.FC = () => {
   // Room config state
   const [roomName, setRoomName] = useState('PSYCH SVNIT Special');
   const [eventLabel, setEventLabel] = useState('E-Cell SVNIT');
-  const [totalRounds, setTotalRounds] = useState(3);
+  const [totalRounds, setTotalRounds] = useState(4);
   const [answerDuration, setAnswerDuration] = useState(120);
   const [votingDuration, setVotingDuration] = useState(90);
   const [maxWords, setMaxWords] = useState(50);
@@ -202,8 +202,8 @@ export const LandingPage: React.FC = () => {
                     className="w-full p-3 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none"
                   >
                     <option value={1}>1 Round (Quick)</option>
-                    <option value={3}>3 Rounds (Standard)</option>
-                    <option value={5}>5 Rounds (Championship)</option>
+                    <option value={4}>4 Rounds (Standard)</option>
+                    <option value={6}>6 Rounds (Championship)</option>
                   </select>
                 </div>
 

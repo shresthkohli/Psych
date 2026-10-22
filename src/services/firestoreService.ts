@@ -78,7 +78,7 @@ export async function createRoom(
   }
 
   // Create initial Round 1 doc
-  const initialQuestion = questions[0]?.text || 'Describe E-Cell at SVNIT in the most fun way possible.';
+  const initialQuestion = questions[0]?.text || 'who is SVNIT to you?';
   const round1Ref = doc(db, 'rooms', roomId, 'rounds', 'round_1');
   const round1Data: Omit<Round, 'id'> = {
     roundNumber: 1,

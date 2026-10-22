@@ -16,7 +16,7 @@ export interface RoomSettings {
   allowVoteChanges: boolean; // default true
   allowAnswerEdits: boolean; // default true
   showSubmissionsCount: boolean; // default true
-  totalRounds: number; // default 3
+  totalRounds: number; // default 4
 }
 
 export interface Room {

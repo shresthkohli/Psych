@@ -15,10 +15,12 @@ import {
   Clock,
   Shield,
   FileText,
+  UserX,
 } from 'lucide-react';
 import { Room, Round, Answer, Player, RoundScore, GameEventLog } from '../../types/game';
 import { exportLeaderboardToCSV } from '../../lib/csvExport';
 import { computeLeaderboard } from '../../lib/gameLogic';
+import { useCountdown } from '../../hooks/useCountdown';
 
 interface HostDashboardProps {
   room: Room;
@@ -38,6 +40,7 @@ interface HostDashboardProps {
   onCancelRound: () => void;
   onEndGame: () => void;
   onModerateAnswer: (answerId: string, status: 'active' | 'hidden') => void;
+  onKickPlayer?: (playerId: string) => void;
 }
 
 export const HostDashboard: React.FC<HostDashboardProps> = ({
@@ -58,6 +61,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
   onCancelRound,
   onEndGame,
   onModerateAnswer,
+  onKickPlayer,
 }) => {
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -67,6 +71,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
   }>({ isOpen: false, title: '', description: '', action: () => {} });
 
   const [showModeration, setShowModeration] = useState(false);
+  const [showPlayers, setShowPlayers] = useState(false);
 
   const leaderboard = computeLeaderboard(players, scores);
 
@@ -75,6 +80,19 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
   };
 
   const isPaused = room.status === 'PAUSED';
+  const isAnswering = room.status === 'ANSWERING';
+  const isVoting = room.status === 'VOTING';
+  const phaseDuration = isAnswering
+    ? room.settings?.answerDuration || 120
+    : isVoting
+    ? room.settings?.votingDuration || 90
+    : 120;
+
+  const countdown = useCountdown(
+    room.phaseDeadline || 0,
+    phaseDuration,
+    isPaused
+  );
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6 pb-12">
@@ -122,9 +140,17 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
       {/* Primary Phase Controls */}
       <div className="bg-neutral-900 border border-psych-borderDark rounded-2xl p-6 space-y-5">
         <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-white">
-            Primary Phase Progression
-          </h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-white">
+              Primary Phase Progression
+            </h2>
+            {['ANSWERING', 'VOTING'].includes(room.status) && (
+              <span className="px-2.5 py-1 bg-psych-yellow/15 text-psych-yellow border border-psych-yellow/40 rounded-lg font-mono text-xs font-bold flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 animate-pulse" />
+                <span>{countdown.formattedTime}</span>
+              </span>
+            )}
+          </div>
           <span className="text-xs font-mono text-neutral-400">
             {players.length} Players Connected
           </span>
@@ -296,6 +322,69 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                     >
                       {isHidden ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                     </button>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Players & Presence Roster */}
+      <div className="bg-psych-cardBg border border-psych-borderDark rounded-2xl p-5 space-y-4">
+        <div className="flex items-center justify-between pb-2 border-b border-neutral-800">
+          <div className="flex items-center gap-2">
+            <Users className="w-4 h-4 text-psych-yellow" />
+            <h2 className="text-sm font-bold uppercase tracking-wider text-white">
+              Connected Participants ({players.length})
+            </h2>
+          </div>
+          <button
+            onClick={() => setShowPlayers(!showPlayers)}
+            className="text-xs text-psych-yellow hover:underline font-bold"
+          >
+            {showPlayers ? 'Collapse' : 'Manage Participants'}
+          </button>
+        </div>
+
+        {showPlayers && (
+          <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+            {players.length === 0 ? (
+              <p className="text-xs text-neutral-500 italic">No players connected yet.</p>
+            ) : (
+              players.map((p) => {
+                const isOnline = p.connectedStatus !== 'offline';
+                return (
+                  <div
+                    key={p.id}
+                    className="p-3 bg-neutral-900 border border-neutral-800 rounded-xl flex items-center justify-between gap-3"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span
+                        className={`w-2.5 h-2.5 rounded-full ${isOnline ? 'bg-green-500 animate-pulse' : 'bg-neutral-600'}`}
+                        title={isOnline ? 'Online' : 'Offline'}
+                      />
+                      <span className="text-sm font-bold text-white truncate">{p.displayName}</span>
+                      <span className="text-xs font-mono text-neutral-400">Score: {p.totalScore || 0}</span>
+                    </div>
+
+                    {onKickPlayer && (
+                      <button
+                        onClick={() =>
+                          setConfirmModal({
+                            isOpen: true,
+                            title: `Remove ${p.displayName}?`,
+                            description: `Are you sure you want to remove ${p.displayName} from the room?`,
+                            action: () => onKickPlayer(p.id),
+                          })
+                        }
+                        title="Remove player from room"
+                        className="px-2 py-1 bg-red-950/40 hover:bg-red-900/60 border border-red-900/50 text-red-300 rounded-lg text-xs font-bold flex items-center gap-1"
+                      >
+                        <UserX className="w-3.5 h-3.5" />
+                        <span>Kick</span>
+                      </button>
+                    )}
                   </div>
                 );
               })

@@ -15,6 +15,7 @@ import {
   calculateScoresAndTransitionToResults,
   advanceToNextRound,
   startRound,
+  setPlayerPresence,
 } from '../services/firestoreService';
 import { sessionStore } from '../services/authService';
 import { Room, Round, Player, Answer, Vote, RoundScore } from '../types/game';
@@ -48,21 +49,45 @@ export const RoomPage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
-  // Network listener
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
   // Retrieve persistent player session
   const playerSession = roomCode ? sessionStore.getPlayerSession(roomCode) : null;
   const currentUserId = playerSession?.playerId || '';
+
+  // Network and presence tracking
+  useEffect(() => {
+    if (!room?.id || !currentUserId) return;
+
+    const handleOnline = () => {
+      setIsOnline(true);
+      setPlayerPresence(room.id, currentUserId, 'online');
+    };
+    const handleOffline = () => {
+      setIsOnline(false);
+      setPlayerPresence(room.id, currentUserId, 'offline');
+    };
+    const handleBeforeUnload = () => {
+      setPlayerPresence(room.id, currentUserId, 'offline');
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Initial presence mark
+    setPlayerPresence(room.id, currentUserId, 'online');
+
+    // Heartbeat every 30s to keep lastSeenAt fresh
+    const heartbeat = setInterval(() => {
+      setPlayerPresence(room.id, currentUserId, 'online');
+    }, 30000);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      clearInterval(heartbeat);
+    };
+  }, [room?.id, currentUserId]);
 
   // Host verification
   const hostToken = roomCode ? sessionStore.getHostToken(roomCode) : null;
@@ -158,33 +183,41 @@ export const RoomPage: React.FC = () => {
     room?.status === 'PAUSED'
   );
 
-  // Auto-advance when ALL players have submitted during ANSWERING
+  // Auto-advance when ALL active players have submitted during ANSWERING
   useEffect(() => {
-    if (!room || room.status !== 'ANSWERING' || !round || players.length === 0) return;
+    if (!room || room.status !== 'ANSWERING' || !round || round.status !== 'ANSWERING' || players.length === 0) return;
+    const activePlayers = players.filter((p) => p.connectedStatus !== 'offline');
+    const targetCount = activePlayers.length > 0 ? activePlayers.length : players.length;
     const submittedCount = round.submittedPlayerIds?.length ?? (round.submissionCount || 0);
-    if (submittedCount >= players.length) {
-      transitionToVoting(room.id, round.id, room.settings.votingDuration).catch(console.error);
+    if (submittedCount >= targetCount && targetCount > 0) {
+      transitionToVoting(room.id, round.id, room.settings.votingDuration, true).catch(console.error);
     }
-  }, [room?.status, round?.id, round?.submittedPlayerIds, round?.submissionCount, players.length]);
+  }, [room?.status, round?.id, round?.status, round?.submittedPlayerIds, round?.submissionCount, players]);
 
-  // Auto-advance when ALL players have voted during VOTING
+  // Auto-advance when ALL active players have voted during VOTING
   useEffect(() => {
-    if (!room || room.status !== 'VOTING' || !round || players.length === 0) return;
+    if (!room || room.status !== 'VOTING' || !round || round.status !== 'VOTING' || round.scoringProcessed || players.length === 0) return;
+    const activePlayers = players.filter((p) => p.connectedStatus !== 'offline');
+    const targetCount = activePlayers.length > 0 ? activePlayers.length : players.length;
     const votedCount = round.votedPlayerIds?.length ?? (round.voteCount || 0);
-    if (votedCount >= players.length) {
-      calculateScoresAndTransitionToResults(room.id, round.id).catch(console.error);
+    if (votedCount >= targetCount && targetCount > 0) {
+      calculateScoresAndTransitionToResults(room.id, round.id, true).catch(console.error);
     }
-  }, [room?.status, round?.id, round?.votedPlayerIds, round?.voteCount, players.length]);
+  }, [room?.status, round?.id, round?.status, round?.scoringProcessed, round?.votedPlayerIds, round?.voteCount, players]);
 
   // Auto-advance on countdown expiry
   useEffect(() => {
-    if (!countdown.isExpired || !room || !round) return;
-    if (room.status === 'ANSWERING') {
-      transitionToVoting(room.id, round.id, room.settings.votingDuration).catch(console.error);
-    } else if (room.status === 'VOTING') {
-      calculateScoresAndTransitionToResults(room.id, round.id).catch(console.error);
+    if (!countdown.isExpired || !room || !round || room.status === 'PAUSED') return;
+    const now = Date.now();
+    // Guard against premature timer firing: deadline must actually have elapsed
+    if (!room.phaseDeadline || now < room.phaseDeadline) return;
+
+    if (room.status === 'ANSWERING' && round.status === 'ANSWERING') {
+      transitionToVoting(room.id, round.id, room.settings.votingDuration, false).catch(console.error);
+    } else if (room.status === 'VOTING' && round.status === 'VOTING' && !round.scoringProcessed) {
+      calculateScoresAndTransitionToResults(room.id, round.id, false).catch(console.error);
     }
-  }, [countdown.isExpired, room?.status, round?.id]);
+  }, [countdown.isExpired, room?.status, room?.phaseDeadline, round?.id, round?.status, round?.scoringProcessed]);
 
   // Submit Answer handler
   const handleSubmitAnswer = async (answerText: string) => {

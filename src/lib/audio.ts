@@ -7,8 +7,10 @@ class SoundManager {
 
   constructor() {
     // Read user preference from localStorage (Default is OFF as requested)
-    const stored = localStorage.getItem('psych_sound_enabled');
-    this.isEnabled = stored === 'true';
+    if (typeof localStorage !== 'undefined') {
+      const stored = localStorage.getItem('psych_sound_enabled');
+      this.isEnabled = stored === 'true';
+    }
   }
 
   public get enabled(): boolean {
@@ -17,7 +19,9 @@ class SoundManager {
 
   public toggle(): boolean {
     this.isEnabled = !this.isEnabled;
-    localStorage.setItem('psych_sound_enabled', String(this.isEnabled));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('psych_sound_enabled', String(this.isEnabled));
+    }
     if (this.isEnabled) {
       this.initCtx();
       this.playTone(523.25, 0.1, 'sine'); // C5 confirmation beep
@@ -27,7 +31,9 @@ class SoundManager {
 
   public setEnabled(enable: boolean) {
     this.isEnabled = enable;
-    localStorage.setItem('psych_sound_enabled', String(enable));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('psych_sound_enabled', String(enable));
+    }
     if (enable) {
       this.initCtx();
     }

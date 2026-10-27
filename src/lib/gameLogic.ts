@@ -79,11 +79,9 @@ export interface CalculateScoresOutput {
 }
 
 /**
- * Server-authoritative scoring formula implementation:
- * - 100 points per valid vote received by author's answer.
- * - 25 points participation for casting a valid vote.
- * - 50 points bonus for author(s) of most-voted answer(s) (including ties).
- *   If no valid votes cast (maxVotes === 0), bonus is 0.
+ * Scoring formula implementation:
+ * - 1 point per valid vote received by author's answer.
+ * - 0 points for 0 votes.
  * - Self-votes are strictly excluded and never count.
  * - Idempotent and deterministic.
  */

@@ -5,11 +5,14 @@ import {
   getDocs,
   setDoc,
   updateDoc,
+  deleteDoc,
   query,
   where,
   onSnapshot,
   runTransaction,
   Unsubscribe,
+  arrayUnion,
+  increment,
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import {
@@ -190,6 +193,8 @@ export async function submitAnswer(
 
   const answerRef = doc(db, 'rooms', roomId, 'rounds', roundId, 'answers', playerId);
   const now = Date.now();
+  const existingAns = await getDoc(answerRef);
+  const isFirstSubmission = !existingAns.exists();
 
   const answerDoc: Omit<Answer, 'id'> = {
     authorPlayerId: playerId,
@@ -201,22 +206,27 @@ export async function submitAnswer(
 
   await setDoc(answerRef, answerDoc);
 
-  // Update submission count and submittedPlayerIds
-  const allAnswersSnap = await getDocs(collection(db, 'rooms', roomId, 'rounds', roundId, 'answers'));
-  const submittedPlayerIds: string[] = [];
-  allAnswersSnap.forEach((d) => submittedPlayerIds.push(d.id));
+  // Atomically register submission and update count
+  if (isFirstSubmission) {
+    await updateDoc(roundRef, {
+      submissionCount: increment(1),
+      submittedPlayerIds: arrayUnion(playerId),
+    });
+  }
 
+  // Check active connected players
   const playersSnap = await getDocs(collection(db, 'rooms', roomId, 'players'));
+  const activePlayers = playersSnap.docs.filter((p) => (p.data() as Player).connectedStatus !== 'offline');
+  const targetCount = activePlayers.length > 0 ? activePlayers.length : playersSnap.size;
 
-  await updateDoc(roundRef, {
-    submissionCount: allAnswersSnap.size,
-    submittedPlayerIds,
-  });
+  const roundAfterSnap = await getDoc(roundRef);
+  const roundAfterData = roundAfterSnap.data() as Round;
+  const submittedIds = roundAfterData.submittedPlayerIds || [];
 
-  // AUTO ADVANCE: If all players have submitted answers, advance immediately to VOTING
-  if (playersSnap.size > 0 && allAnswersSnap.size >= playersSnap.size) {
+  // AUTO ADVANCE: If all active players have submitted answers, advance immediately to VOTING
+  if (targetCount > 0 && submittedIds.length >= targetCount) {
     try {
-      await transitionToVoting(roomId, roundId, settings.votingDuration);
+      await transitionToVoting(roomId, roundId, settings.votingDuration, true);
     } catch (e) {
       console.warn('Auto transition to voting note:', e);
     }
@@ -266,6 +276,7 @@ export async function submitVote(
   const voteRef = doc(db, 'rooms', roomId, 'rounds', roundId, 'votes', voterPlayerId);
   const now = Date.now();
   const existingVote = await getDoc(voteRef);
+  const isFirstVote = !existingVote.exists();
 
   if (existingVote.exists()) {
     await updateDoc(voteRef, {
@@ -281,22 +292,27 @@ export async function submitVote(
     });
   }
 
-  // Update vote count and votedPlayerIds
-  const allVotesSnap = await getDocs(collection(db, 'rooms', roomId, 'rounds', roundId, 'votes'));
-  const votedPlayerIds: string[] = [];
-  allVotesSnap.forEach((d) => votedPlayerIds.push(d.id));
+  // Atomically register vote and update count
+  if (isFirstVote) {
+    await updateDoc(roundRef, {
+      voteCount: increment(1),
+      votedPlayerIds: arrayUnion(voterPlayerId),
+    });
+  }
 
+  // Check active connected players
   const playersSnap = await getDocs(collection(db, 'rooms', roomId, 'players'));
+  const activePlayers = playersSnap.docs.filter((p) => (p.data() as Player).connectedStatus !== 'offline');
+  const targetCount = activePlayers.length > 0 ? activePlayers.length : playersSnap.size;
 
-  await updateDoc(roundRef, {
-    voteCount: allVotesSnap.size,
-    votedPlayerIds,
-  });
+  const roundAfterSnap = await getDoc(roundRef);
+  const roundAfterData = roundAfterSnap.data() as Round;
+  const votedIds = roundAfterData.votedPlayerIds || [];
 
-  // AUTO ADVANCE: If all players have voted, advance immediately to RESULTS
-  if (playersSnap.size > 0 && allVotesSnap.size >= playersSnap.size) {
+  // AUTO ADVANCE: If all active players have voted, advance immediately to RESULTS
+  if (targetCount > 0 && votedIds.length >= targetCount) {
     try {
-      await calculateScoresAndTransitionToResults(roomId, roundId);
+      await calculateScoresAndTransitionToResults(roomId, roundId, true);
     } catch (e) {
       console.warn('Auto transition to results note:', e);
     }
@@ -345,11 +361,13 @@ export async function startRound(
 
 /**
  * HOST / AUTOMATION: Ends answering phase, locks submissions, shuffles answers, transitions to VOTING.
+ * Guarded against premature execution unless force is true (e.g. host button or all players submitted).
  */
 export async function transitionToVoting(
   roomId: string,
   roundId: string,
-  durationSeconds: number
+  durationSeconds: number,
+  force: boolean = true
 ): Promise<void> {
   if (!db) throw new Error('Firestore not initialized.');
 
@@ -359,6 +377,19 @@ export async function transitionToVoting(
   const roundData = roundSnap.data() as Round;
   if (roundData.status !== 'ANSWERING') {
     return; // Already transitioned
+  }
+
+  // Guard: if not forced, verify deadline has passed or all eligible players have submitted
+  if (!force) {
+    const now = Date.now();
+    const hasDeadlinePassed = roundData.phaseDeadline && now >= roundData.phaseDeadline - 1500;
+    const submittedCount = roundData.submittedPlayerIds?.length ?? (roundData.submissionCount || 0);
+    const eligibleCount = roundData.eligiblePlayerCount || 0;
+    const haveAllSubmitted = eligibleCount > 0 && submittedCount >= eligibleCount;
+
+    if (!hasDeadlinePassed && !haveAllSubmitted) {
+      return;
+    }
   }
 
   const answersSnap = await getDocs(collection(db, 'rooms', roomId, 'rounds', roundId, 'answers'));
@@ -398,13 +429,16 @@ export async function transitionToVoting(
 
 /**
  * HOST / AUTOMATION: Tallies votes, calculates scores idempotently, and reveals results.
- * IMPORTANT: All getDocs calls MUST be outside runTransaction. Inside a transaction,
- * only transaction.get() calls are allowed. getDocs inside a transaction is not
- * atomic and causes stale reads + silent failures.
+ * Guarded against premature execution:
+ * - Must be in VOTING phase
+ * - Not scored yet
+ * - If force is false, deadline must have passed OR all players must have voted
+ * All getDocs calls are outside runTransaction for Firestore atomicity.
  */
 export async function calculateScoresAndTransitionToResults(
   roomId: string,
-  roundId: string
+  roundId: string,
+  force: boolean = true
 ): Promise<void> {
   if (!db) throw new Error('Firestore not initialized.');
 
@@ -420,6 +454,24 @@ export async function calculateScoresAndTransitionToResults(
     // Already scored, just ensure room status is RESULTS
     await updateDoc(roomRef, { status: 'RESULTS', updatedAt: Date.now() });
     return;
+  }
+
+  // Guard: Must be in VOTING phase to calculate scores
+  if (roundCheckData.status !== 'VOTING') {
+    return;
+  }
+
+  // Guard: if not forced, verify deadline has passed or all eligible players have voted
+  if (!force) {
+    const now = Date.now();
+    const hasDeadlinePassed = roundCheckData.phaseDeadline && now >= roundCheckData.phaseDeadline - 1500;
+    const votedCount = roundCheckData.votedPlayerIds?.length ?? (roundCheckData.voteCount || 0);
+    const eligibleCount = roundCheckData.eligiblePlayerCount || 0;
+    const haveAllVoted = eligibleCount > 0 && votedCount >= eligibleCount;
+
+    if (!hasDeadlinePassed && !haveAllVoted) {
+      return;
+    }
   }
 
   // Read answers, votes, and players OUTSIDE transaction (non-transactional reads are fine here
@@ -459,8 +511,8 @@ export async function calculateScoresAndTransitionToResults(
     if (!roundDoc.exists()) throw new Error('Round not found');
 
     const roundData = roundDoc.data() as Round;
-    if (roundData.scoringProcessed) {
-      // Another concurrent call already processed scores — abort safely
+    if (roundData.scoringProcessed || roundData.status !== 'VOTING') {
+      // Another concurrent call already processed scores or round state changed
       return;
     }
 
@@ -716,3 +768,33 @@ export function subscribeToUserVote(
     }
   });
 }
+
+/**
+ * Updates player online status.
+ */
+export async function setPlayerPresence(
+  roomId: string,
+  playerId: string,
+  status: 'online' | 'offline'
+): Promise<void> {
+  if (!db || !roomId || !playerId) return;
+  try {
+    const pRef = doc(db, 'rooms', roomId, 'players', playerId);
+    await updateDoc(pRef, {
+      connectedStatus: status,
+      lastSeenAt: Date.now(),
+    });
+  } catch (e) {
+    // Non-fatal presence update error
+  }
+}
+
+/**
+ * HOST: Removes a disconnected or disruptive player from the room.
+ */
+export async function kickPlayer(roomId: string, playerId: string): Promise<void> {
+  if (!db || !roomId || !playerId) return;
+  const pRef = doc(db, 'rooms', roomId, 'players', playerId);
+  await deleteDoc(pRef);
+}
+

@@ -22,7 +22,7 @@ stateDiagram-v2
     ANSWERING --> SUBMISSION_LOCKED: Deadline passes / Host closes
     SUBMISSION_LOCKED --> VOTING: Server randomizes answers anonymously
     VOTING --> VOTING_LOCKED: Deadline passes / Host closes
-    VOTING_LOCKED --> RESULTS: Server calculates scores atomically (100/50/25 rule)
+    VOTING_LOCKED --> RESULTS: Scores calculated atomically (1 vote = 1 point)
     RESULTS --> ANSWERING: Host advances to next round
     RESULTS --> GAME_FINISHED: All rounds completed (Podium & CSV)
     ANSWERING --> PAUSED: Host pauses (timer frozen)
@@ -33,14 +33,14 @@ stateDiagram-v2
 
 ---
 
-## 🏆 Scoring Rules (Section 10)
+## 🏆 Scoring Rules
 
-1. **Answer Points**: **100 points** per valid vote received by your anonymous answer. Self-votes are prohibited and never count.
-2. **Voting Participation Points**: **25 points** awarded for casting a valid vote during the voting phase.
-3. **Winner Bonus**: **50 points** awarded to the author(s) of the most-voted answer. In case of ties, **each tied winner receives 50 bonus points**.
-4. **Formula**:
-   $$\text{Round Score} = (\text{Votes} \times 100) + \text{Participation (25)} + \text{Winner Bonus (50)}$$
-5. **Leaderboard**: Competition ranking (**1st, 2nd, 2nd, 4th**) with deterministic secondary ordering.
+1. **Answer Points**: **1 point** per valid vote received by your anonymous answer. Self-votes are prohibited and never count.
+2. **Formula**:
+   $$\text{Round Score} = \text{Valid Votes Received}$$
+   - 0 votes = 0 points.
+   - Irrespective of round or ties, each vote directly awards 1 point.
+3. **Leaderboard**: Competition ranking (**1st, 2nd, 2nd, 4th**) with deterministic secondary ordering.
 
 ---
 

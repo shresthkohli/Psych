@@ -15,6 +15,11 @@ export interface CountdownState {
  * Recalculates directly from phaseDeadline - Date.now().
  * Pauses if isPaused is true.
  * Triggers sound effects at urgency thresholds (<10s) and expiration if enabled.
+ *
+ * CRITICAL FIX: Stale timer prevention.
+ * `isExpired` is strictly derived from `(deadline > 0 && !isPaused && Date.now() >= deadline)`.
+ * It is mathematically impossible for a new future deadline to report `isExpired: true`.
+ * `secondsLeft` is immediately synchronized whenever `deadline` changes.
  */
 export function useCountdown(
   deadline: number,
@@ -22,13 +27,28 @@ export function useCountdown(
   isPaused: boolean = false,
   onExpire?: () => void
 ): CountdownState {
-  const [secondsLeft, setSecondsLeft] = useState<number>(() => {
-    if (!deadline) return totalDurationSeconds;
-    return Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-  });
+  const computeSecondsLeft = (dl: number) => {
+    if (!dl) return totalDurationSeconds;
+    return Math.max(0, Math.ceil((dl - Date.now()) / 1000));
+  };
+
+  const [secondsLeft, setSecondsLeft] = useState<number>(() => computeSecondsLeft(deadline));
+
+  // Synchronize state synchronously during render when deadline changes to eliminate 1-render lag
+  const prevDeadlineRef = useRef(deadline);
+  if (prevDeadlineRef.current !== deadline) {
+    prevDeadlineRef.current = deadline;
+    setSecondsLeft(computeSecondsLeft(deadline));
+  }
 
   const hasExpiredRef = useRef(false);
   const lastSoundSecondRef = useRef<number>(-1);
+
+  // Compute live remaining values directly from deadline and Date.now()
+  const now = Date.now();
+  const isExpired = Boolean(deadline > 0 && !isPaused && now >= deadline);
+  const currentMs = !deadline ? totalDurationSeconds * 1000 : Math.max(0, deadline - now);
+  const effectiveSecondsLeft = deadline > 0 ? Math.max(0, Math.ceil(currentMs / 1000)) : secondsLeft;
 
   useEffect(() => {
     if (!deadline || isPaused) {
@@ -46,7 +66,7 @@ export function useCountdown(
         soundManager.playUrgentTick();
       }
 
-      if (secs === 0 && !hasExpiredRef.current) {
+      if (remainingMs <= 0 && !hasExpiredRef.current) {
         hasExpiredRef.current = true;
         soundManager.playTimeUp();
         if (onExpire) {
@@ -68,20 +88,19 @@ export function useCountdown(
     lastSoundSecondRef.current = -1;
   }, [deadline]);
 
-  const mins = Math.floor(secondsLeft / 60);
-  const secs = secondsLeft % 60;
+  const mins = Math.floor(effectiveSecondsLeft / 60);
+  const secs = effectiveSecondsLeft % 60;
   const formattedTime = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 
   const totalMs = totalDurationSeconds * 1000;
-  const currentMs = Math.max(0, deadline - Date.now());
   const progressPercent = Math.min(100, Math.max(0, (currentMs / totalMs) * 100));
 
   return {
-    secondsLeft,
+    secondsLeft: effectiveSecondsLeft,
     formattedTime,
-    isUrgent: secondsLeft <= 30 && secondsLeft > 10,
-    isCritical: secondsLeft <= 10 && secondsLeft > 0,
-    isExpired: secondsLeft === 0,
+    isUrgent: effectiveSecondsLeft <= 30 && effectiveSecondsLeft > 10,
+    isCritical: effectiveSecondsLeft <= 10 && effectiveSecondsLeft > 0,
+    isExpired,
     progressPercent,
   };
 }

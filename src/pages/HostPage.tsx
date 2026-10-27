@@ -13,6 +13,7 @@ import {
   pauseGame,
   resumeGame,
   advanceToNextRound,
+  kickPlayer,
 } from '../services/firestoreService';
 import { sessionStore } from '../services/authService';
 import { Room, Round, Player, Answer, RoundScore } from '../types/game';
@@ -113,12 +114,12 @@ export const HostPage: React.FC = () => {
 
   const handleEndAnswering = async () => {
     if (!room || !room.currentRoundId) return;
-    await transitionToVoting(room.id, room.currentRoundId, room.settings.votingDuration);
+    await transitionToVoting(room.id, room.currentRoundId, room.settings.votingDuration, true);
   };
 
   const handleEndVoting = async () => {
     if (!room || !room.currentRoundId) return;
-    await calculateScoresAndTransitionToResults(room.id, room.currentRoundId);
+    await calculateScoresAndTransitionToResults(room.id, room.currentRoundId, true);
   };
 
   const handleNextRound = async () => {
@@ -168,6 +169,11 @@ export const HostPage: React.FC = () => {
     await updateDoc(doc(db, 'rooms', room.id, 'rounds', room.currentRoundId, 'answers', answerId), {
       moderationStatus: status,
     });
+  };
+
+  const handleKickPlayer = async (playerId: string) => {
+    if (!room) return;
+    await kickPlayer(room.id, playerId);
   };
 
   if (isLoading) {
@@ -261,6 +267,7 @@ export const HostPage: React.FC = () => {
           onCancelRound={handleCancelRound}
           onEndGame={handleEndGame}
           onModerateAnswer={handleModerateAnswer}
+          onKickPlayer={handleKickPlayer}
         />
       </main>
 

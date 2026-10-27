@@ -70,6 +70,7 @@ export interface Round {
   randomizedAnswerIds: string[];
   resultsRevealed: boolean;
   scoringProcessed: boolean;
+  restartCount?: number;
   createdAt: number;
 }
 

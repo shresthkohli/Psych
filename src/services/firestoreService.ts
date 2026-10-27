@@ -186,11 +186,6 @@ export async function submitAnswer(
     return { success: false, wordCount: validation.wordCount, error: 'Submissions are closed for this round.' };
   }
 
-  // Grace period of 1.5 seconds for network latency
-  if (Date.now() > roundData.phaseDeadline + 1500) {
-    return { success: false, wordCount: validation.wordCount, error: 'Deadline has passed.' };
-  }
-
   const answerRef = doc(db, 'rooms', roomId, 'rounds', roundId, 'answers', playerId);
   const now = Date.now();
   const existingAns = await getDoc(answerRef);
@@ -256,10 +251,6 @@ export async function submitVote(
   const roundData = roundSnap.data() as Round;
   if (roundData.status !== 'VOTING') {
     return { success: false, error: 'Voting is not currently active.' };
-  }
-
-  if (Date.now() > roundData.phaseDeadline + 1500) {
-    return { success: false, error: 'Voting deadline has passed.' };
   }
 
   // Check self-vote using private answer record
@@ -372,6 +363,25 @@ export async function restartRound(
 ): Promise<void> {
   if (!db) throw new Error('Firestore not initialized.');
 
+  // If this round was already scored, undo its points from each player's total BEFORE deleting the score docs
+  const restartRoundRef = doc(db, 'rooms', roomId, 'rounds', roundId);
+  const restartRoundSnap = await getDoc(restartRoundRef);
+  if (restartRoundSnap.exists() && (restartRoundSnap.data() as Round).scoringProcessed) {
+    const oldScoresSnap = await getDocs(collection(db, 'rooms', roomId, 'rounds', roundId, 'scores'));
+    for (const scoreDoc of oldScoresSnap.docs) {
+      const pts = (scoreDoc.data() as RoundScore).totalRoundPoints || 0;
+      if (pts === 0) continue;
+      try {
+        await updateDoc(doc(db, 'rooms', roomId, 'players', scoreDoc.id), {
+          totalScore: increment(-pts),
+        });
+      } catch (e) {
+        // Player may have been removed (kicked); skip safely
+        console.warn('Could not undo score for player', scoreDoc.id, e);
+      }
+    }
+  }
+
   // Delete all answers in round
   const answersSnap = await getDocs(collection(db, 'rooms', roomId, 'rounds', roundId, 'answers'));
   const deletePromises: Promise<void>[] = [];
@@ -404,6 +414,7 @@ export async function restartRound(
     randomizedAnswerIds: [],
     resultsRevealed: false,
     scoringProcessed: false,
+    restartCount: increment(1),
   });
 
   const roomRef = doc(db, 'rooms', roomId);

@@ -17,7 +17,7 @@ import {
   kickPlayer,
 } from '../services/firestoreService';
 import { useCountdown } from '../hooks/useCountdown';
-import { sessionStore } from '../services/authService';
+import { sessionStore, getOrCreateAnonymousUser } from '../services/authService';
 import { Room, Round, Player, Answer, RoundScore } from '../types/game';
 import { Header } from '../components/common/Header';
 import { HostDashboard } from '../components/host/HostDashboard';
@@ -37,8 +37,21 @@ export const HostPage: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
   const [enteredToken, setEnteredToken] = useState('');
   const [authError, setAuthError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getOrCreateAnonymousUser()
+      .catch(() => null)
+      .finally(() => {
+        if (!cancelled) setAuthReady(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!roomCode) return;
@@ -206,7 +219,7 @@ export const HostPage: React.FC = () => {
     await kickPlayer(room.id, playerId);
   };
 
-  if (isLoading) {
+  if (isLoading || !authReady) {
     return (
       <div className="min-h-screen bg-psych-black flex items-center justify-center p-4">
         <div className="w-10 h-10 border-4 border-psych-yellow border-t-transparent rounded-full animate-spin" />

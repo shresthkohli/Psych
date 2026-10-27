@@ -17,7 +17,7 @@ import {
   startRound,
   setPlayerPresence,
 } from '../services/firestoreService';
-import { sessionStore } from '../services/authService';
+import { sessionStore, getOrCreateAnonymousUser } from '../services/authService';
 import { Room, Round, Player, Answer, Vote, RoundScore } from '../types/game';
 import { useCountdown } from '../hooks/useCountdown';
 import { Header } from '../components/common/Header';
@@ -48,10 +48,23 @@ export const RoomPage: React.FC = () => {
   const [isVoting, setIsVoting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [authReady, setAuthReady] = useState(false);
 
   // Retrieve persistent player session
   const playerSession = roomCode ? sessionStore.getPlayerSession(roomCode) : null;
   const currentUserId = playerSession?.playerId || '';
+
+  useEffect(() => {
+    let cancelled = false;
+    getOrCreateAnonymousUser()
+      .catch(() => null)
+      .finally(() => {
+        if (!cancelled) setAuthReady(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Network and presence tracking
   useEffect(() => {
@@ -266,7 +279,7 @@ export const RoomPage: React.FC = () => {
     await startRound(room.id, room.currentRoundId, room.settings.answerDuration);
   };
 
-  if (isLoading) {
+  if (isLoading || !authReady) {
     return (
       <div className="min-h-screen bg-psych-black flex items-center justify-center p-4">
         <div className="text-center space-y-3">
@@ -333,6 +346,7 @@ export const RoomPage: React.FC = () => {
 
         {room.status === 'ANSWERING' && round && (
           <AnsweringPhase
+            key={`${round.id}-${round.restartCount ?? 0}`}
             room={room}
             round={round}
             userAnswer={userAnswer}

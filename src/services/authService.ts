@@ -7,6 +7,11 @@ import { User } from 'firebase/auth';
  */
 export async function getOrCreateAnonymousUser(): Promise<User | null> {
   if (!auth) return null;
+  try {
+    await auth.authStateReady();
+  } catch {
+    // ignore: fall through to the checks below
+  }
   if (auth.currentUser) {
     return auth.currentUser;
   }

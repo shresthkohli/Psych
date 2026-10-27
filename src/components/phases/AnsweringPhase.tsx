@@ -37,6 +37,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
   const minWords = room.settings.minWords || 1;
   const maxWords = room.settings.maxWords || 50;
   const validation = validateAnswerWords(text, minWords, maxWords);
+  const isClosed = room.status !== 'ANSWERING';
 
   useEffect(() => {
     if (userAnswer && !isEditing) {
@@ -60,7 +61,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
   };
 
   const handleEditClick = () => {
-    if (room.settings.allowAnswerEdits && !countdown.isExpired) {
+    if (room.settings.allowAnswerEdits && !isClosed) {
       setIsEditing(true);
     }
   };
@@ -122,7 +123,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
                 </p>
               </div>
             </div>
-            {room.settings.allowAnswerEdits && !countdown.isExpired && (
+            {room.settings.allowAnswerEdits && !isClosed && (
               <button
                 onClick={handleEditClick}
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-psych-yellow rounded-xl text-xs font-bold transition-colors"
@@ -242,7 +243,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
               onChange={(e) => setText(e.target.value)}
               placeholder="Write your anonymous response here... (30–50 words maximum)"
               rows={4}
-              disabled={isSubmitting || countdown.isExpired}
+              disabled={isSubmitting || isClosed}
               className="w-full bg-transparent text-white text-base placeholder-neutral-500 resize-none focus:outline-none"
               autoFocus
             />
@@ -284,7 +285,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
 
           <button
             type="submit"
-            disabled={!validation.valid || isSubmitting || countdown.isExpired}
+            disabled={!validation.valid || isSubmitting || isClosed}
             className="w-full py-3.5 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
           >
             {isSubmitting ? (

@@ -34,6 +34,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
   const [selectedId, setSelectedId] = useState<string>(userVote?.selectedAnswerId || '');
   const [isChangingVote, setIsChangingVote] = useState(!userVote);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const isClosed = room.status !== 'VOTING';
 
   useEffect(() => {
     if (userVote) {
@@ -64,7 +65,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
   }, [answers, round.randomizedAnswerIds]);
 
   const handleSelect = (ansId: string, isSelf: boolean) => {
-    if (isSelf || countdown.isExpired) return;
+    if (isSelf || isClosed) return;
     if (userVote && !isChangingVote && !room.settings.allowVoteChanges) return;
 
     soundManager.playVote();
@@ -73,7 +74,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
   };
 
   const handleConfirmVote = async () => {
-    if (!selectedId || isVoting || countdown.isExpired) return;
+    if (!selectedId || isVoting || isClosed) return;
     setErrorMessage(null);
 
     const res = await onVote(selectedId);
@@ -144,7 +145,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
                 </p>
               </div>
             </div>
-            {room.settings.allowVoteChanges && !countdown.isExpired && (
+            {room.settings.allowVoteChanges && !isClosed && (
               <button
                 onClick={() => setIsChangingVote(true)}
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-psych-yellow rounded-xl text-xs font-bold transition-colors"
@@ -262,7 +263,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
                   key={answer.id}
                   type="button"
                   onClick={() => handleSelect(answer.id, isSelf)}
-                  disabled={isSelf || countdown.isExpired}
+                  disabled={isSelf || isClosed}
                   className={`w-full text-left p-4 rounded-2xl border-2 transition-all relative ${
                     isSelected
                       ? 'bg-neutral-900 border-psych-yellow shadow-brutal ring-2 ring-psych-yellow/20'
@@ -323,7 +324,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
 
           <button
             onClick={handleConfirmVote}
-            disabled={!selectedId || isVoting || countdown.isExpired}
+            disabled={!selectedId || isVoting || isClosed}
             className="w-full py-4 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
           >
             {isVoting ? (

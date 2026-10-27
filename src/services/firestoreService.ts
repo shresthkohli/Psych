@@ -206,25 +206,26 @@ export async function submitAnswer(
 
   await setDoc(answerRef, answerDoc);
 
-  // Atomically register submission and update count
-  if (isFirstSubmission) {
-    await updateDoc(roundRef, {
-      submissionCount: increment(1),
-      submittedPlayerIds: arrayUnion(playerId),
-    });
-  }
-
-  // Check active connected players
-  const playersSnap = await getDocs(collection(db, 'rooms', roomId, 'players'));
-  const activePlayers = playersSnap.docs.filter((p) => (p.data() as Player).connectedStatus !== 'offline');
-  const targetCount = activePlayers.length > 0 ? activePlayers.length : playersSnap.size;
+  // Atomically register submission into submittedPlayerIds and update count
+  await updateDoc(roundRef, {
+    submittedPlayerIds: arrayUnion(playerId),
+  });
 
   const roundAfterSnap = await getDoc(roundRef);
   const roundAfterData = roundAfterSnap.data() as Round;
   const submittedIds = roundAfterData.submittedPlayerIds || [];
 
-  // AUTO ADVANCE: If all active players have submitted answers, advance immediately to VOTING
-  if (targetCount > 0 && submittedIds.length >= targetCount) {
+  await updateDoc(roundRef, {
+    submissionCount: submittedIds.length,
+  });
+
+  // AUTO ADVANCE: Verify that EVERY active connected player has submitted
+  const playersSnap = await getDocs(collection(db, 'rooms', roomId, 'players'));
+  const activePlayers = playersSnap.docs.filter((p) => (p.data() as Player).connectedStatus !== 'offline');
+  const targetPlayers = activePlayers.length > 0 ? activePlayers : playersSnap.docs;
+  const allActiveSubmitted = targetPlayers.length > 0 && targetPlayers.every((doc) => submittedIds.includes(doc.id));
+
+  if (allActiveSubmitted) {
     try {
       await transitionToVoting(roomId, roundId, settings.votingDuration, true);
     } catch (e) {
@@ -276,7 +277,6 @@ export async function submitVote(
   const voteRef = doc(db, 'rooms', roomId, 'rounds', roundId, 'votes', voterPlayerId);
   const now = Date.now();
   const existingVote = await getDoc(voteRef);
-  const isFirstVote = !existingVote.exists();
 
   if (existingVote.exists()) {
     await updateDoc(voteRef, {
@@ -292,25 +292,26 @@ export async function submitVote(
     });
   }
 
-  // Atomically register vote and update count
-  if (isFirstVote) {
-    await updateDoc(roundRef, {
-      voteCount: increment(1),
-      votedPlayerIds: arrayUnion(voterPlayerId),
-    });
-  }
-
-  // Check active connected players
-  const playersSnap = await getDocs(collection(db, 'rooms', roomId, 'players'));
-  const activePlayers = playersSnap.docs.filter((p) => (p.data() as Player).connectedStatus !== 'offline');
-  const targetCount = activePlayers.length > 0 ? activePlayers.length : playersSnap.size;
+  // Atomically register vote into votedPlayerIds and update count
+  await updateDoc(roundRef, {
+    votedPlayerIds: arrayUnion(voterPlayerId),
+  });
 
   const roundAfterSnap = await getDoc(roundRef);
   const roundAfterData = roundAfterSnap.data() as Round;
   const votedIds = roundAfterData.votedPlayerIds || [];
 
-  // AUTO ADVANCE: If all active players have voted, advance immediately to RESULTS
-  if (targetCount > 0 && votedIds.length >= targetCount) {
+  await updateDoc(roundRef, {
+    voteCount: votedIds.length,
+  });
+
+  // AUTO ADVANCE: Verify that EVERY active connected player has voted
+  const playersSnap = await getDocs(collection(db, 'rooms', roomId, 'players'));
+  const activePlayers = playersSnap.docs.filter((p) => (p.data() as Player).connectedStatus !== 'offline');
+  const targetPlayers = activePlayers.length > 0 ? activePlayers : playersSnap.docs;
+  const allActiveVoted = targetPlayers.length > 0 && targetPlayers.every((doc) => votedIds.includes(doc.id));
+
+  if (allActiveVoted) {
     try {
       await calculateScoresAndTransitionToResults(roomId, roundId, true);
     } catch (e) {
@@ -360,6 +361,61 @@ export async function startRound(
 }
 
 /**
+ * HOST: Cleanly restarts the active round.
+ * Deletes all existing answers, votes, and scores in subcollections,
+ * resets round progress flags and counters, and starts fresh answering.
+ */
+export async function restartRound(
+  roomId: string,
+  roundId: string,
+  durationSeconds: number
+): Promise<void> {
+  if (!db) throw new Error('Firestore not initialized.');
+
+  // Delete all answers in round
+  const answersSnap = await getDocs(collection(db, 'rooms', roomId, 'rounds', roundId, 'answers'));
+  const deletePromises: Promise<void>[] = [];
+  answersSnap.forEach((d) => deletePromises.push(deleteDoc(d.ref)));
+
+  // Delete all votes in round
+  const votesSnap = await getDocs(collection(db, 'rooms', roomId, 'rounds', roundId, 'votes'));
+  votesSnap.forEach((d) => deletePromises.push(deleteDoc(d.ref)));
+
+  // Delete all scores in round
+  const scoresSnap = await getDocs(collection(db, 'rooms', roomId, 'rounds', roundId, 'scores'));
+  scoresSnap.forEach((d) => deletePromises.push(deleteDoc(d.ref)));
+
+  await Promise.all(deletePromises);
+
+  const now = Date.now();
+  const deadline = now + durationSeconds * 1000;
+  const playersSnap = await getDocs(collection(db, 'rooms', roomId, 'players'));
+
+  const roundRef = doc(db, 'rooms', roomId, 'rounds', roundId);
+  await updateDoc(roundRef, {
+    status: 'ANSWERING',
+    phaseStartedAt: now,
+    phaseDeadline: deadline,
+    eligiblePlayerCount: playersSnap.size,
+    submittedPlayerIds: [],
+    votedPlayerIds: [],
+    submissionCount: 0,
+    voteCount: 0,
+    randomizedAnswerIds: [],
+    resultsRevealed: false,
+    scoringProcessed: false,
+  });
+
+  const roomRef = doc(db, 'rooms', roomId);
+  await updateDoc(roomRef, {
+    status: 'ANSWERING',
+    phaseStartedAt: now,
+    phaseDeadline: deadline,
+    updatedAt: now,
+  });
+}
+
+/**
  * HOST / AUTOMATION: Ends answering phase, locks submissions, shuffles answers, transitions to VOTING.
  * Guarded against premature execution unless force is true (e.g. host button or all players submitted).
  */
@@ -382,7 +438,7 @@ export async function transitionToVoting(
   // Guard: if not forced, verify deadline has passed or all eligible players have submitted
   if (!force) {
     const now = Date.now();
-    const hasDeadlinePassed = roundData.phaseDeadline && now >= roundData.phaseDeadline - 1500;
+    const hasDeadlinePassed = Boolean(roundData.phaseDeadline && now >= roundData.phaseDeadline);
     const submittedCount = roundData.submittedPlayerIds?.length ?? (roundData.submissionCount || 0);
     const eligibleCount = roundData.eligiblePlayerCount || 0;
     const haveAllSubmitted = eligibleCount > 0 && submittedCount >= eligibleCount;
@@ -464,7 +520,7 @@ export async function calculateScoresAndTransitionToResults(
   // Guard: if not forced, verify deadline has passed or all eligible players have voted
   if (!force) {
     const now = Date.now();
-    const hasDeadlinePassed = roundCheckData.phaseDeadline && now >= roundCheckData.phaseDeadline - 1500;
+    const hasDeadlinePassed = Boolean(roundCheckData.phaseDeadline && now >= roundCheckData.phaseDeadline);
     const votedCount = roundCheckData.votedPlayerIds?.length ?? (roundCheckData.voteCount || 0);
     const eligibleCount = roundCheckData.eligiblePlayerCount || 0;
     const haveAllVoted = eligibleCount > 0 && votedCount >= eligibleCount;

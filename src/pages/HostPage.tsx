@@ -8,6 +8,7 @@ import {
   subscribeToAnswers,
   subscribeToScores,
   startRound,
+  restartRound,
   transitionToVoting,
   calculateScoresAndTransitionToResults,
   pauseGame,
@@ -15,6 +16,7 @@ import {
   advanceToNextRound,
   kickPlayer,
 } from '../services/firestoreService';
+import { useCountdown } from '../hooks/useCountdown';
 import { sessionStore } from '../services/authService';
 import { Room, Round, Player, Answer, RoundScore } from '../types/game';
 import { Header } from '../components/common/Header';
@@ -106,6 +108,34 @@ export const HostPage: React.FC = () => {
     }
   };
 
+  // Authoritative host countdown timer
+  const isAnswering = room?.status === 'ANSWERING';
+  const isVoting = room?.status === 'VOTING';
+  const totalPhaseSeconds = isAnswering
+    ? room?.settings.answerDuration || 120
+    : isVoting
+    ? room?.settings.votingDuration || 90
+    : 120;
+
+  const countdown = useCountdown(
+    room?.phaseDeadline || 0,
+    totalPhaseSeconds,
+    room?.status === 'PAUSED'
+  );
+
+  // Authoritative host auto-advance when countdown timer expires
+  useEffect(() => {
+    if (!isAuthorized || !countdown.isExpired || !room || !round || room.status === 'PAUSED') return;
+    const now = Date.now();
+    if (!room.phaseDeadline || now < room.phaseDeadline) return;
+
+    if (room.status === 'ANSWERING' && round.status === 'ANSWERING') {
+      transitionToVoting(room.id, round.id, room.settings.votingDuration, true).catch(console.error);
+    } else if (room.status === 'VOTING' && round.status === 'VOTING' && !round.scoringProcessed) {
+      calculateScoresAndTransitionToResults(room.id, round.id, true).catch(console.error);
+    }
+  }, [isAuthorized, countdown.isExpired, room?.status, room?.phaseDeadline, round?.id, round?.status, round?.scoringProcessed]);
+
   // Host Action handlers
   const handleStartRound = async () => {
     if (!room || !room.currentRoundId) return;
@@ -144,8 +174,8 @@ export const HostPage: React.FC = () => {
 
   const handleRestartRound = async () => {
     if (!room || !room.currentRoundId || !db) return;
-    // Reset round
-    await startRound(room.id, room.currentRoundId, room.settings.answerDuration);
+    // Cleanly purge all existing answers, votes, scores and reset round counters
+    await restartRound(room.id, room.currentRoundId, room.settings.answerDuration);
   };
 
   const handleCancelRound = async () => {

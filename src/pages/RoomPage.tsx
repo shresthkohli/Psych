@@ -187,37 +187,44 @@ export const RoomPage: React.FC = () => {
   useEffect(() => {
     if (!room || room.status !== 'ANSWERING' || !round || round.status !== 'ANSWERING' || players.length === 0) return;
     const activePlayers = players.filter((p) => p.connectedStatus !== 'offline');
-    const targetCount = activePlayers.length > 0 ? activePlayers.length : players.length;
-    const submittedCount = round.submittedPlayerIds?.length ?? (round.submissionCount || 0);
-    if (submittedCount >= targetCount && targetCount > 0) {
+    const targetPlayers = activePlayers.length > 0 ? activePlayers : players;
+    const submittedIds = round.submittedPlayerIds || [];
+    const allActiveSubmitted = targetPlayers.length > 0 && targetPlayers.every((p) => submittedIds.includes(p.id));
+    if (allActiveSubmitted) {
       transitionToVoting(room.id, round.id, room.settings.votingDuration, true).catch(console.error);
     }
-  }, [room?.status, round?.id, round?.status, round?.submittedPlayerIds, round?.submissionCount, players]);
+  }, [room?.status, round?.id, round?.status, round?.submittedPlayerIds, players]);
 
   // Auto-advance when ALL active players have voted during VOTING
   useEffect(() => {
     if (!room || room.status !== 'VOTING' || !round || round.status !== 'VOTING' || round.scoringProcessed || players.length === 0) return;
     const activePlayers = players.filter((p) => p.connectedStatus !== 'offline');
-    const targetCount = activePlayers.length > 0 ? activePlayers.length : players.length;
-    const votedCount = round.votedPlayerIds?.length ?? (round.voteCount || 0);
-    if (votedCount >= targetCount && targetCount > 0) {
+    const targetPlayers = activePlayers.length > 0 ? activePlayers : players;
+    const votedIds = round.votedPlayerIds || [];
+    const allActiveVoted = targetPlayers.length > 0 && targetPlayers.every((p) => votedIds.includes(p.id));
+    if (allActiveVoted) {
       calculateScoresAndTransitionToResults(room.id, round.id, true).catch(console.error);
     }
-  }, [room?.status, round?.id, round?.status, round?.scoringProcessed, round?.votedPlayerIds, round?.voteCount, players]);
+  }, [room?.status, round?.id, round?.status, round?.scoringProcessed, round?.votedPlayerIds, players]);
 
-  // Auto-advance on countdown expiry
+  // Auto-advance on countdown expiry: Host has authoritative priority; player phones have 15s fail-safe buffer
   useEffect(() => {
     if (!countdown.isExpired || !room || !round || room.status === 'PAUSED') return;
     const now = Date.now();
-    // Guard against premature timer firing: deadline must actually have elapsed
-    if (!room.phaseDeadline || now < room.phaseDeadline) return;
+    if (!room.phaseDeadline) return;
+
+    // Host device advances immediately at deadline.
+    // Non-host player phones only advance after a 15-second grace period as an emergency fail-safe,
+    // preventing any player phone clock skew from cutting off voting or answering prematurely.
+    const canAdvance = isHost ? now >= room.phaseDeadline : now >= room.phaseDeadline + 15000;
+    if (!canAdvance) return;
 
     if (room.status === 'ANSWERING' && round.status === 'ANSWERING') {
-      transitionToVoting(room.id, round.id, room.settings.votingDuration, false).catch(console.error);
+      transitionToVoting(room.id, round.id, room.settings.votingDuration, isHost).catch(console.error);
     } else if (room.status === 'VOTING' && round.status === 'VOTING' && !round.scoringProcessed) {
-      calculateScoresAndTransitionToResults(room.id, round.id, false).catch(console.error);
+      calculateScoresAndTransitionToResults(room.id, round.id, isHost).catch(console.error);
     }
-  }, [countdown.isExpired, room?.status, room?.phaseDeadline, round?.id, round?.status, round?.scoringProcessed]);
+  }, [countdown.isExpired, isHost, room?.status, room?.phaseDeadline, round?.id, round?.status, round?.scoringProcessed]);
 
   // Submit Answer handler
   const handleSubmitAnswer = async (answerText: string) => {

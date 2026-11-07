@@ -84,11 +84,18 @@ export function validateQuestionText(text: string): { valid: boolean; error?: st
   return { valid: true, clean };
 }
 
-export function validateTotalRounds(n: number, room: Pick<RoomLike, 'status' | 'currentRoundNumber'>): string | null {
+export function validateTotalRounds(
+  n: number,
+  room: Pick<RoomLike, 'status' | 'currentRoundNumber' | 'questionCount' | 'settings'>
+): string | null {
   if (room.status === 'GAME_FINISHED') return 'The game has finished.';
   if (!Number.isInteger(n)) return 'Total rounds must be a whole number.';
   if (n < Math.max(1, room.currentRoundNumber)) {
     return `Total rounds cannot be lower than the current round (${room.currentRoundNumber}).`;
+  }
+  const typed = getQuestionCount(room);
+  if (n < typed) {
+    return `You have already typed ${typed} questions. Total rounds cannot be lower than that.`;
   }
   if (n > GAME_LIMITS.MAX_QUESTIONS_PER_GAME) {
     return `Total rounds cannot exceed ${GAME_LIMITS.MAX_QUESTIONS_PER_GAME}.`;

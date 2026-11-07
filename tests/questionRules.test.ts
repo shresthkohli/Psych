@@ -111,5 +111,51 @@ describe('questionRules business logic', () => {
     expect(typeof validateMaxPlayers(5, 8)).toBe('string');
     expect(validateMaxPlayers(8, 8)).toBeNull();
   });
+
+  describe('validateTotalRounds', () => {
+    const testRoom = room({
+      status: 'LOBBY',
+      currentRoundNumber: 1,
+      questionCount: 5,
+      settings: { totalRounds: 6 },
+    });
+
+    it('returns a non-null string containing "5" when n is lower than typed questions', () => {
+      const result = validateTotalRounds(3, testRoom);
+      expect(result).not.toBeNull();
+      expect(result).toContain('5');
+    });
+
+    it('returns null when n equals typed questions', () => {
+      expect(validateTotalRounds(5, testRoom)).toBeNull();
+    });
+
+    it('returns null when n is greater than typed questions within limits', () => {
+      expect(validateTotalRounds(6, testRoom)).toBeNull();
+    });
+
+    it('returns the max-limit error when n exceeds MAX_QUESTIONS_PER_GAME', () => {
+      const maxExceeded = GAME_LIMITS.MAX_QUESTIONS_PER_GAME + 1;
+      const result = validateTotalRounds(maxExceeded, testRoom);
+      expect(result).not.toBeNull();
+      expect(result).toContain(String(GAME_LIMITS.MAX_QUESTIONS_PER_GAME));
+    });
+
+    it('handles legacy rooms where questionCount is undefined', () => {
+      const legacyRoom = room({
+        status: 'LOBBY',
+        currentRoundNumber: 1,
+        questionCount: undefined,
+        settings: { totalRounds: 4 },
+      });
+      expect(validateTotalRounds(2, legacyRoom)).not.toBeNull();
+      expect(validateTotalRounds(4, legacyRoom)).toBeNull();
+    });
+
+    it('returns game finished error when room status is GAME_FINISHED', () => {
+      const finishedRoom = room({ status: 'GAME_FINISHED' });
+      expect(validateTotalRounds(5, finishedRoom)).toBe('The game has finished.');
+    });
+  });
 });
 

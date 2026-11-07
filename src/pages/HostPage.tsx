@@ -18,9 +18,13 @@ import {
 } from '../services/firestoreService';
 import { useCountdown } from '../hooks/useCountdown';
 import { sessionStore, getOrCreateAnonymousUser } from '../services/authService';
-import { Room, Round, Player, Answer, RoundScore } from '../types/game';
+import { Room, Round, Player, Answer, RoundScore, QuestionDoc } from '../types/game';
 import { Header } from '../components/common/Header';
 import { HostDashboard } from '../components/host/HostDashboard';
+import { subscribeToQuestions, addQuestion, editQuestion } from '../services/questionService';
+import { updateTotalRounds, updateMaxPlayers } from '../services/roomSettingsService';
+import { QuestionManager } from '../components/host/QuestionManager';
+import { getStartBlockReason } from '../lib/questionRules';
 import { AlertCircle, ShieldAlert, KeyRound } from 'lucide-react';
 import { doc, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -34,6 +38,8 @@ export const HostPage: React.FC = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [scores, setScores] = useState<Record<string, RoundScore>>({});
+  const [questions, setQuestions] = useState<QuestionDoc[]>([]);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -58,6 +64,7 @@ export const HostPage: React.FC = () => {
 
     let unsubRoom: () => void = () => {};
     let unsubPlayers: () => void = () => {};
+    let unsubQuestions: () => void = () => {};
 
     getRoomByCode(roomCode)
       .then((r) => {
@@ -80,6 +87,10 @@ export const HostPage: React.FC = () => {
           setPlayers(plist);
         });
 
+        unsubQuestions = subscribeToQuestions(r.id, (qlist) => {
+          setQuestions(qlist);
+        });
+
         setIsLoading(false);
       })
       .catch((err) => {
@@ -90,6 +101,7 @@ export const HostPage: React.FC = () => {
     return () => {
       unsubRoom();
       unsubPlayers();
+      unsubQuestions();
     };
   }, [roomCode]);
 
@@ -152,7 +164,17 @@ export const HostPage: React.FC = () => {
   // Host Action handlers
   const handleStartRound = async () => {
     if (!room || !room.currentRoundId) return;
-    await startRound(room.id, room.currentRoundId, room.settings.answerDuration);
+    const startReason = getStartBlockReason(room);
+    if (startReason) {
+      setActionError(startReason);
+      return;
+    }
+    try {
+      setActionError(null);
+      await startRound(room.id, room.currentRoundId, room.settings.answerDuration);
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : 'Could not start the round.');
+    }
   };
 
   const handleEndAnswering = async () => {
@@ -167,7 +189,12 @@ export const HostPage: React.FC = () => {
 
   const handleNextRound = async () => {
     if (!room) return;
-    await advanceToNextRound(room.id, room.currentRoundNumber + 1, room.settings.totalRounds);
+    try {
+      setActionError(null);
+      await advanceToNextRound(room.id, room.currentRoundNumber + 1, room.settings.totalRounds);
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : 'Could not advance to the next round.');
+    }
   };
 
   const handlePause = async () => {
@@ -182,7 +209,12 @@ export const HostPage: React.FC = () => {
 
   const handleSkipQuestion = async () => {
     if (!room) return;
-    await advanceToNextRound(room.id, room.currentRoundNumber + 1, room.settings.totalRounds);
+    try {
+      setActionError(null);
+      await advanceToNextRound(room.id, room.currentRoundNumber + 1, room.settings.totalRounds);
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : 'Could not skip the question.');
+    }
   };
 
   const handleRestartRound = async () => {
@@ -218,6 +250,11 @@ export const HostPage: React.FC = () => {
     if (!room) return;
     await kickPlayer(room.id, playerId);
   };
+
+  const handleAddQuestion = (text: string) => addQuestion(room!.id, text);
+  const handleEditQuestion = (roundNumber: number, text: string) => editQuestion(room!.id, roundNumber, text);
+  const handleChangeTotalRounds = (n: number) => updateTotalRounds(room!.id, n);
+  const handleUpdateMaxPlayers = (n: number) => updateMaxPlayers(room!.id, n);
 
   if (isLoading || !authReady) {
     return (
@@ -292,26 +329,41 @@ export const HostPage: React.FC = () => {
       <Header roomCode={room.roomCode} playerCount={players.length} isHost={true} />
 
       <main className="flex-1 px-4 py-6">
-        <HostDashboard
-          room={room}
-          round={round}
-          answers={answers}
-          players={players}
-          scores={scores}
-          onStartRound={handleStartRound}
-          onEndAnswering={handleEndAnswering}
-          onEndVoting={handleEndVoting}
-          onRevealResults={handleEndVoting}
-          onNextRound={handleNextRound}
-          onPauseGame={handlePause}
-          onResumeGame={handleResume}
-          onSkipQuestion={handleSkipQuestion}
-          onRestartRound={handleRestartRound}
-          onCancelRound={handleCancelRound}
-          onEndGame={handleEndGame}
-          onModerateAnswer={handleModerateAnswer}
-          onKickPlayer={handleKickPlayer}
-        />
+        <div className="space-y-6">
+          {actionError && (
+            <div className="w-full max-w-4xl mx-auto p-3 bg-psych-red/10 border border-psych-red/40 rounded-xl text-xs text-psych-red">
+              {actionError}
+            </div>
+          )}
+          <HostDashboard
+            room={room}
+            round={round}
+            answers={answers}
+            players={players}
+            scores={scores}
+            onStartRound={handleStartRound}
+            onEndAnswering={handleEndAnswering}
+            onEndVoting={handleEndVoting}
+            onRevealResults={handleEndVoting}
+            onNextRound={handleNextRound}
+            onPauseGame={handlePause}
+            onResumeGame={handleResume}
+            onSkipQuestion={handleSkipQuestion}
+            onRestartRound={handleRestartRound}
+            onCancelRound={handleCancelRound}
+            onEndGame={handleEndGame}
+            onModerateAnswer={handleModerateAnswer}
+            onKickPlayer={handleKickPlayer}
+            onUpdateMaxPlayers={handleUpdateMaxPlayers}
+          />
+          <QuestionManager
+            room={room}
+            questions={questions}
+            onAdd={handleAddQuestion}
+            onEdit={handleEditQuestion}
+            onChangeTotalRounds={handleChangeTotalRounds}
+          />
+        </div>
       </main>
 
       <footer className="py-4 text-center text-xs text-neutral-500">

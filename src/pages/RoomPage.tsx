@@ -270,7 +270,11 @@ export const RoomPage: React.FC = () => {
   // Host Next Round handler
   const handleNextRound = async () => {
     if (!room) return;
-    await advanceToNextRound(room.id, room.currentRoundNumber + 1, room.settings.totalRounds);
+    try {
+      await advanceToNextRound(room.id, room.currentRoundNumber + 1, room.settings.totalRounds);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // Host Start Round handler

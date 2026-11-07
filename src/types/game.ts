@@ -17,6 +17,7 @@ export interface RoomSettings {
   allowAnswerEdits: boolean; // default true
   showSubmissionsCount: boolean; // default true
   totalRounds: number; // default 4
+  maxPlayers?: number; // soft limit on players joining the room
 }
 
 export interface Room {
@@ -34,6 +35,7 @@ export interface Room {
   phaseDeadline: number; // authoritative unix timestamp ms
   remainingDurationBeforePause?: number; // ms remaining when paused
   settings: RoomSettings;
+  questionCount?: number; // questions typed so far (maintained by questionService)
   createdAt: number;
   updatedAt: number;
 }
@@ -128,4 +130,17 @@ export interface GameEventLog {
   type: 'PHASE_CHANGE' | 'ROUND_START' | 'ROUND_END' | 'MODERATION' | 'SCORING' | 'PLAYER_JOIN' | 'PAUSE' | 'RESUME';
   message: string;
   details?: Record<string, unknown>;
+}
+
+export interface QuestionDoc {
+  id: string; // e.g. "q_1"
+  roundNumber: number;
+  text: string;
+  createdAt: number;
+  updatedAt?: number;
+}
+
+export interface ServiceResult {
+  success: boolean;
+  error?: string;
 }

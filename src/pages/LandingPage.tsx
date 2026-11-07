@@ -5,7 +5,8 @@ import { Header } from '../components/common/Header';
 import { RulesModal } from '../components/common/RulesModal';
 import { createRoom } from '../services/firestoreService';
 import { getOrCreateAnonymousUser, sessionStore } from '../services/authService';
-import { SAMPLE_QUESTIONS } from '../constants/sampleQuestions';
+import { GAME_LIMITS } from '../constants/gameLimits';
+import { clampTotalRounds, clampMaxPlayers, minQuestionsToStart } from '../lib/questionRules';
 import { RoomSettings } from '../types/game';
 
 export const LandingPage: React.FC = () => {
@@ -17,7 +18,8 @@ export const LandingPage: React.FC = () => {
   // Room config state
   const [roomName, setRoomName] = useState('PSYCH SVNIT Special');
   const [eventLabel, setEventLabel] = useState('E-Cell SVNIT');
-  const [totalRounds, setTotalRounds] = useState(4);
+  const [totalRounds, setTotalRounds] = useState<number>(GAME_LIMITS.DEFAULT_TOTAL_ROUNDS);
+  const [maxPlayers, setMaxPlayers] = useState<number>(GAME_LIMITS.DEFAULT_MAX_PLAYERS);
   const [answerDuration, setAnswerDuration] = useState(120);
   const [votingDuration, setVotingDuration] = useState(90);
   const [maxWords, setMaxWords] = useState(50);
@@ -35,7 +37,8 @@ export const LandingPage: React.FC = () => {
       const hostSecret = `secret_${Math.random().toString(36).substring(2, 10)}`;
 
       const settings: RoomSettings = {
-        totalRounds,
+        totalRounds: clampTotalRounds(totalRounds),
+        maxPlayers: clampMaxPlayers(maxPlayers),
         answerDuration,
         votingDuration,
         maxWords,
@@ -45,15 +48,7 @@ export const LandingPage: React.FC = () => {
         showSubmissionsCount: true,
       };
 
-      const selectedQuestions = SAMPLE_QUESTIONS.slice(0, totalRounds);
-      const { roomId, roomCode } = await createRoom(
-        hostUid,
-        hostSecret,
-        roomName,
-        eventLabel,
-        settings,
-        selectedQuestions
-      );
+      const { roomCode } = await createRoom(hostUid, hostSecret, roomName, eventLabel, settings, []);
 
       // Save host token
       sessionStore.saveHostToken(roomCode, hostSecret);
@@ -194,17 +189,19 @@ export const LandingPage: React.FC = () => {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-1">
-                    Number of Rounds
+                    Number of Questions (max {GAME_LIMITS.MAX_QUESTIONS_PER_GAME})
                   </label>
-                  <select
+                  <input
+                    type="number"
+                    min={1}
+                    max={GAME_LIMITS.MAX_QUESTIONS_PER_GAME}
                     value={totalRounds}
                     onChange={(e) => setTotalRounds(Number(e.target.value))}
                     className="w-full p-3 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none"
-                  >
-                    <option value={1}>1 Round (Quick)</option>
-                    <option value={4}>4 Rounds (Standard)</option>
-                    <option value={6}>6 Rounds (Championship)</option>
-                  </select>
+                  />
+                  <p className="text-[11px] text-neutral-500 mt-1">
+                    You can start after typing {minQuestionsToStart(clampTotalRounds(totalRounds))} — add the rest during the game.
+                  </p>
                 </div>
 
                 <div>
@@ -221,6 +218,20 @@ export const LandingPage: React.FC = () => {
                     <option value={50}>50 Words (Default)</option>
                   </select>
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-1">
+                  Max Players ({GAME_LIMITS.MIN_PLAYERS_LIMIT}–{GAME_LIMITS.MAX_PLAYERS_CAP})
+                </label>
+                <input
+                  type="number"
+                  min={GAME_LIMITS.MIN_PLAYERS_LIMIT}
+                  max={GAME_LIMITS.MAX_PLAYERS_CAP}
+                  value={maxPlayers}
+                  onChange={(e) => setMaxPlayers(Number(e.target.value))}
+                  className="w-full p-3 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-3">

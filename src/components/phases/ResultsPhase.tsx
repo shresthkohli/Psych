@@ -5,6 +5,7 @@ import { Room, Round, Answer, RoundScore, Player, LeaderboardEntry } from '../..
 import { Leaderboard } from '../leaderboard/Leaderboard';
 import { computeLeaderboard } from '../../lib/gameLogic';
 import { soundManager } from '../../lib/audio';
+import { getNextRoundBlockReason } from '../../lib/questionRules';
 
 interface ResultsPhaseProps {
   room: Room;
@@ -95,6 +96,7 @@ export const ResultsPhase: React.FC<ResultsPhaseProps> = ({
 
   const currentUserScore = scores[currentUserId];
   const isFinalRound = room.currentRoundNumber >= room.settings.totalRounds;
+  const nextRoundBlockReason = getNextRoundBlockReason(room);
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6 animate-fade-in">
@@ -212,7 +214,11 @@ export const ResultsPhase: React.FC<ResultsPhaseProps> = ({
       {isHost && (
         <div className="p-4 bg-neutral-900 border-2 border-psych-yellow/40 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 sticky bottom-4 shadow-2xl">
           <span className="text-xs text-neutral-300 font-medium">
-            {isFinalRound ? 'Final round completed!' : `Ready for Round ${room.currentRoundNumber + 1}?`}
+            {!isFinalRound && nextRoundBlockReason
+              ? nextRoundBlockReason
+              : isFinalRound
+              ? 'Final round completed!'
+              : `Ready for Round ${room.currentRoundNumber + 1}?`}
           </span>
 
           {isFinalRound ? (
@@ -226,7 +232,8 @@ export const ResultsPhase: React.FC<ResultsPhaseProps> = ({
           ) : (
             <button
               onClick={onNextRound}
-              className="w-full sm:w-auto px-6 py-3 bg-psych-yellow hover:bg-yellow-400 text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
+              disabled={nextRoundBlockReason !== null}
+              className="w-full sm:w-auto px-6 py-3 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
             >
               <span>START ROUND {room.currentRoundNumber + 1}</span>
               <ArrowRight className="w-4 h-4" />

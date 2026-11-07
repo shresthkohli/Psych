@@ -17,10 +17,12 @@ import {
   FileText,
   UserX,
 } from 'lucide-react';
-import { Room, Round, Answer, Player, RoundScore, GameEventLog } from '../../types/game';
+import { Room, Round, Answer, Player, RoundScore, GameEventLog, ServiceResult } from '../../types/game';
 import { exportLeaderboardToCSV } from '../../lib/csvExport';
 import { computeLeaderboard } from '../../lib/gameLogic';
 import { useCountdown } from '../../hooks/useCountdown';
+import { getStartBlockReason, getNextRoundBlockReason } from '../../lib/questionRules';
+import { MaxPlayersControl } from './MaxPlayersControl';
 
 interface HostDashboardProps {
   room: Room;
@@ -41,6 +43,7 @@ interface HostDashboardProps {
   onEndGame: () => void;
   onModerateAnswer: (answerId: string, status: 'active' | 'hidden') => void;
   onKickPlayer?: (playerId: string) => void;
+  onUpdateMaxPlayers?: (n: number) => Promise<ServiceResult>;
 }
 
 export const HostDashboard: React.FC<HostDashboardProps> = ({
@@ -62,6 +65,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
   onEndGame,
   onModerateAnswer,
   onKickPlayer,
+  onUpdateMaxPlayers,
 }) => {
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -80,6 +84,8 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
   };
 
   const isPaused = room.status === 'PAUSED';
+  const startBlockReason = getStartBlockReason(room);
+  const nextRoundBlockReason = getNextRoundBlockReason(room);
   const isAnswering = room.status === 'ANSWERING';
   const isVoting = room.status === 'VOTING';
   const phaseDuration = isAnswering
@@ -152,20 +158,24 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
             )}
           </div>
           <span className="text-xs font-mono text-neutral-400">
-            {players.length} Players Connected
+            {players.length}{room.settings.maxPlayers ? ` / ${room.settings.maxPlayers}` : ''} Players Connected
           </span>
         </div>
 
         {/* Action Buttons based on current state */}
         <div className="flex flex-wrap gap-3">
           {room.status === 'LOBBY' && (
-            <button
-              onClick={onStartRound}
-              className="px-6 py-3.5 bg-psych-yellow hover:bg-yellow-400 text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center gap-2 uppercase tracking-wider"
-            >
-              <Play className="w-4 h-4 fill-psych-black" />
-              <span>START ROUND {room.currentRoundNumber}</span>
-            </button>
+            <>
+              <button
+                onClick={onStartRound}
+                disabled={startBlockReason !== null}
+                className="px-6 py-3.5 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center gap-2 uppercase tracking-wider"
+              >
+                <Play className="w-4 h-4 fill-psych-black" />
+                <span>START ROUND {room.currentRoundNumber}</span>
+              </button>
+              {startBlockReason && <p className="w-full text-xs text-psych-yellow">{startBlockReason}</p>}
+            </>
           )}
 
           {room.status === 'ANSWERING' && (
@@ -191,13 +201,17 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
           {room.status === 'RESULTS' && (
             <>
               {room.currentRoundNumber < room.settings.totalRounds ? (
-                <button
-                  onClick={onNextRound}
-                  className="px-6 py-3.5 bg-psych-yellow hover:bg-yellow-400 text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center gap-2 uppercase tracking-wider"
-                >
-                  <Play className="w-4 h-4 fill-psych-black" />
-                  <span>START ROUND {room.currentRoundNumber + 1}</span>
-                </button>
+                <>
+                  <button
+                    onClick={onNextRound}
+                    disabled={nextRoundBlockReason !== null}
+                    className="px-6 py-3.5 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center gap-2 uppercase tracking-wider"
+                  >
+                    <Play className="w-4 h-4 fill-psych-black" />
+                    <span>START ROUND {room.currentRoundNumber + 1}</span>
+                  </button>
+                  {nextRoundBlockReason && <p className="w-full text-xs text-psych-yellow">{nextRoundBlockReason}</p>}
+                </>
               ) : (
                 <button
                   onClick={onEndGame}
@@ -336,7 +350,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-psych-yellow" />
             <h2 className="text-sm font-bold uppercase tracking-wider text-white">
-              Connected Participants ({players.length})
+              Connected Participants ({players.length}{room.settings.maxPlayers ? ` / ${room.settings.maxPlayers}` : ''})
             </h2>
           </div>
           <button
@@ -346,6 +360,8 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
             {showPlayers ? 'Collapse' : 'Manage Participants'}
           </button>
         </div>
+
+        {onUpdateMaxPlayers && <MaxPlayersControl value={room.settings.maxPlayers} onSave={onUpdateMaxPlayers} />}
 
         {showPlayers && (
           <div className="space-y-2 max-h-60 overflow-y-auto pr-1">

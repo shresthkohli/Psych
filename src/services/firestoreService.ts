@@ -13,8 +13,12 @@ import {
   Unsubscribe,
   arrayUnion,
   increment,
+  getCountFromServer,
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { GAME_LIMITS } from '../constants/gameLimits';
+import { getJoinBlockReason, getStartBlockReason, missingQuestionMessage } from '../lib/questionRules';
+import { questionDocRef } from './questionService';
 import {
   Room,
   RoomSettings,
@@ -43,7 +47,7 @@ export async function createRoom(
   roomName: string,
   eventLabel: string,
   settings: RoomSettings,
-  questions: { id: string; text: string }[]
+  questions: { id: string; text: string }[] = []
 ): Promise<{ roomId: string; roomCode: string }> {
   if (!db) throw new Error('Firestore is not initialized.');
 
@@ -51,6 +55,7 @@ export async function createRoom(
   const roomRef = doc(collection(db, 'rooms'));
   const roomId = roomRef.id;
   const now = Date.now();
+  const initialQuestions = questions.slice(0, GAME_LIMITS.MAX_QUESTIONS_PER_GAME);
 
   const roomData: Omit<Room, 'id'> = {
     roomCode,
@@ -63,6 +68,7 @@ export async function createRoom(
     phaseStartedAt: now,
     phaseDeadline: now,
     settings,
+    questionCount: initialQuestions.length,
     createdAt: now,
     updatedAt: now,
   };
@@ -70,9 +76,9 @@ export async function createRoom(
   await setDoc(roomRef, roomData);
 
   // Store configured questions in subcollection
-  for (let i = 0; i < questions.length; i++) {
-    const q = questions[i];
-    const qRef = doc(db, 'rooms', roomId, 'questions', `q_${i + 1}`);
+  for (let i = 0; i < initialQuestions.length; i++) {
+    const q = initialQuestions[i];
+    const qRef = questionDocRef(roomId, i + 1);
     await setDoc(qRef, {
       roundNumber: i + 1,
       text: q.text,
@@ -81,7 +87,7 @@ export async function createRoom(
   }
 
   // Create initial Round 1 doc
-  const initialQuestion = questions[0]?.text || 'who is SVNIT to you?';
+  const initialQuestion = initialQuestions[0]?.text ?? '';
   const round1Ref = doc(db, 'rooms', roomId, 'rounds', 'round_1');
   const round1Data: Omit<Round, 'id'> = {
     roundNumber: 1,
@@ -142,6 +148,17 @@ export async function joinRoom(
       lastSeenAt: now,
     });
     return { id: playerId, ...(existing.data() as Omit<Player, 'id'>) };
+  }
+
+  // Enforce the room's soft player limit for NEW players only (reconnects returned above)
+  const roomForLimitSnap = await getDoc(doc(db, 'rooms', roomId));
+  const playerLimit = roomForLimitSnap.exists()
+    ? (roomForLimitSnap.data() as Omit<Room, 'id'>).settings?.maxPlayers
+    : undefined;
+  if (playerLimit) {
+    const playerCountSnap = await getCountFromServer(collection(db, 'rooms', roomId, 'players'));
+    const joinBlockReason = getJoinBlockReason(playerCountSnap.data().count, playerLimit);
+    if (joinBlockReason) throw new Error(joinBlockReason);
   }
 
   const newPlayer: Omit<Player, 'id'> = {
@@ -322,6 +339,12 @@ export async function startRound(
   durationSeconds: number
 ): Promise<void> {
   if (!db) throw new Error('Firestore not initialized.');
+
+  const roomForStartSnap = await getDoc(doc(db, 'rooms', roomId));
+  if (roomForStartSnap.exists()) {
+    const startBlockReason = getStartBlockReason(roomForStartSnap.data() as Omit<Room, 'id'>);
+    if (startBlockReason) throw new Error(startBlockReason);
+  }
 
   const now = Date.now();
   const deadline = now + durationSeconds * 1000;
@@ -708,11 +731,12 @@ export async function advanceToNextRound(
   }
 
   // Fetch question for next round
-  const qRef = doc(db, 'rooms', roomId, 'questions', `q_${nextRoundNumber}`);
+  const qRef = questionDocRef(roomId, nextRoundNumber);
   const qSnap = await getDoc(qRef);
-  const questionText = qSnap.exists()
-    ? qSnap.data().text
-    : `Round ${nextRoundNumber} Question`;
+  if (!qSnap.exists()) {
+    throw new Error(missingQuestionMessage(nextRoundNumber));
+  }
+  const questionText = qSnap.data().text as string;
 
   const nextRoundId = `round_${nextRoundNumber}`;
   const now = Date.now();

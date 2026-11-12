@@ -9,5 +9,10 @@ export const GAME_LIMITS = {
   DEFAULT_MAX_PLAYERS: 15,
   MIN_PLAYERS_LIMIT: 2,
   MAX_PLAYERS_CAP: 30,
+  DEFAULT_AI_QUESTION_COUNT: 8,
+  MAX_IMPORT_FILE_BYTES: 102400, // 100 KB
+  AI_CONTEXT_MAX_LENGTH: 600, // host free-text "about my group"
+  AI_TOPICS_MAX_LENGTH: 200, // include / avoid topic fields
+  AI_NICKNAME_MAX_LENGTH: 30, // per nickname inside the prompt
 } as const;
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pencil, Check, X, Plus } from 'lucide-react';
+import { Pencil, Check, X, Plus, Sparkles } from 'lucide-react';
 import type { Room, QuestionDoc, ServiceResult } from '../../types/game';
 import { GAME_LIMITS } from '../../constants/gameLimits';
 import {
@@ -16,6 +16,7 @@ export interface QuestionManagerProps {
   onAdd: (text: string) => Promise<ServiceResult>;
   onEdit: (roundNumber: number, text: string) => Promise<ServiceResult>;
   onChangeTotalRounds: (n: number) => Promise<ServiceResult>;
+  onOpenAiHelper?: () => void;
 }
 
 export const QuestionManager: React.FC<QuestionManagerProps> = ({
@@ -24,6 +25,7 @@ export const QuestionManager: React.FC<QuestionManagerProps> = ({
   onAdd,
   onEdit,
   onChangeTotalRounds,
+  onOpenAiHelper,
 }) => {
   const [editingRoundNumber, setEditingRoundNumber] = useState<number | null>(null);
   const [editDraft, setEditDraft] = useState('');
@@ -265,6 +267,19 @@ export const QuestionManager: React.FC<QuestionManagerProps> = ({
         </div>
         {addBlockReason && <p className="text-xs text-psych-yellow">{addBlockReason}</p>}
         {addError && <p className="text-xs text-psych-red">{addError}</p>}
+        {onOpenAiHelper && (
+          <div className="pt-1 flex justify-end">
+            <button
+              type="button"
+              disabled={addBlockReason !== null}
+              onClick={onOpenAiHelper}
+              className="px-3 py-2 bg-neutral-800 hover:bg-neutral-700 text-psych-yellow border border-psych-yellow/40 font-bold rounded-xl flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed text-xs uppercase"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Get questions from AI</span>
+            </button>
+          </div>
+        )}
       </form>
     </div>
   );

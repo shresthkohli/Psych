@@ -5,6 +5,7 @@ import {
   clampMaxPlayers,
   minQuestionsToStart,
   getQuestionCount,
+  getRemainingQuestionSlots,
   getAddQuestionBlockReason,
   getStartBlockReason,
   getNextRoundBlockReason,
@@ -155,6 +156,34 @@ describe('questionRules business logic', () => {
     it('returns game finished error when room status is GAME_FINISHED', () => {
       const finishedRoom = room({ status: 'GAME_FINISHED' });
       expect(validateTotalRounds(5, finishedRoom)).toBe('The game has finished.');
+    });
+  });
+
+  describe('getRemainingQuestionSlots', () => {
+    it('returns MAX_QUESTIONS_PER_GAME when questionCount is 0', () => {
+      expect(getRemainingQuestionSlots(room({ questionCount: 0 }))).toBe(
+        GAME_LIMITS.MAX_QUESTIONS_PER_GAME,
+      );
+    });
+
+    it('returns 0 when questionCount equals MAX_QUESTIONS_PER_GAME', () => {
+      expect(
+        getRemainingQuestionSlots(room({ questionCount: GAME_LIMITS.MAX_QUESTIONS_PER_GAME })),
+      ).toBe(0);
+    });
+
+    it('falls back to settings.totalRounds when questionCount is undefined', () => {
+      expect(
+        getRemainingQuestionSlots(room({ questionCount: undefined, settings: { totalRounds: 4 } })),
+      ).toBe(GAME_LIMITS.MAX_QUESTIONS_PER_GAME - 4);
+    });
+
+    it('never returns a negative number', () => {
+      expect(
+        getRemainingQuestionSlots(
+          room({ questionCount: GAME_LIMITS.MAX_QUESTIONS_PER_GAME + 5 }),
+        ),
+      ).toBe(0);
     });
   });
 });

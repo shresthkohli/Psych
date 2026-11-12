@@ -111,3 +111,8 @@ export function validateMaxPlayers(n: number, currentPlayerCount: number): strin
   return null;
 }
 
+/** Remaining question slots before hitting the game-wide question cap. */
+export function getRemainingQuestionSlots(room: Pick<RoomLike, 'questionCount' | 'settings'>): number {
+  return Math.max(0, GAME_LIMITS.MAX_QUESTIONS_PER_GAME - getQuestionCount(room));
+}
+

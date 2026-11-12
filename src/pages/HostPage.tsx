@@ -21,10 +21,11 @@ import { sessionStore, getOrCreateAnonymousUser } from '../services/authService'
 import { Room, Round, Player, Answer, RoundScore, QuestionDoc } from '../types/game';
 import { Header } from '../components/common/Header';
 import { HostDashboard } from '../components/host/HostDashboard';
-import { subscribeToQuestions, addQuestion, editQuestion } from '../services/questionService';
+import { subscribeToQuestions, addQuestion, addQuestions, editQuestion } from '../services/questionService';
 import { updateTotalRounds, updateMaxPlayers } from '../services/roomSettingsService';
 import { QuestionManager } from '../components/host/QuestionManager';
-import { getStartBlockReason } from '../lib/questionRules';
+import { AiQuestionsModal } from '../components/host/AiQuestionsModal';
+import { getStartBlockReason, getRemainingQuestionSlots } from '../lib/questionRules';
 import { AlertCircle, ShieldAlert, KeyRound } from 'lucide-react';
 import { doc, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -40,6 +41,7 @@ export const HostPage: React.FC = () => {
   const [scores, setScores] = useState<Record<string, RoundScore>>({});
   const [questions, setQuestions] = useState<QuestionDoc[]>([]);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [isAiOpen, setIsAiOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -252,6 +254,7 @@ export const HostPage: React.FC = () => {
   };
 
   const handleAddQuestion = (text: string) => addQuestion(room!.id, text);
+  const handleImportQuestions = (texts: string[]) => addQuestions(room!.id, texts);
   const handleEditQuestion = (roundNumber: number, text: string) => editQuestion(room!.id, roundNumber, text);
   const handleChangeTotalRounds = (n: number) => updateTotalRounds(room!.id, n);
   const handleUpdateMaxPlayers = (n: number) => updateMaxPlayers(room!.id, n);
@@ -362,6 +365,18 @@ export const HostPage: React.FC = () => {
             onAdd={handleAddQuestion}
             onEdit={handleEditQuestion}
             onChangeTotalRounds={handleChangeTotalRounds}
+            onOpenAiHelper={() => setIsAiOpen(true)}
+          />
+          <AiQuestionsModal
+            isOpen={isAiOpen}
+            onClose={() => setIsAiOpen(false)}
+            eventLabel={room.eventLabel ?? ''}
+            roomName={room.roomName ?? ''}
+            maxAnswerWords={room.settings.maxWords}
+            nicknames={players.map((p) => p.displayName)}
+            remainingSlots={getRemainingQuestionSlots(room)}
+            existingTexts={questions.map((q) => q.text)}
+            onImport={handleImportQuestions}
           />
         </div>
       </main>

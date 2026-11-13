@@ -23,6 +23,7 @@ import { computeLeaderboard } from '../../lib/gameLogic';
 import { useCountdown } from '../../hooks/useCountdown';
 import { getStartBlockReason, getNextRoundBlockReason } from '../../lib/questionRules';
 import { MaxPlayersControl } from './MaxPlayersControl';
+import { Leaderboard } from '../leaderboard/Leaderboard';
 import { APP_INFO } from '../../constants/appInfo';
 
 interface HostDashboardProps {
@@ -280,6 +281,9 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
           </div>
         )}
       </div>
+
+      {/* Live Host Leaderboard - Always visible and updated after every round */}
+      <Leaderboard entries={leaderboard} highlightCurrentUser={false} />
 
       {/* Moderation Panel (Private to Host) */}
       <div className="bg-outwit-cardBg border border-outwit-borderDark rounded-2xl p-5 space-y-4">

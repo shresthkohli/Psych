@@ -209,8 +209,8 @@ export const AiPromptStep: React.FC<AiPromptStepProps> = ({
           className="w-full bg-outwit-black border border-neutral-700 rounded-xl p-2.5 text-xs font-mono text-neutral-200 focus:outline-none"
         />
         <p className="text-[11px] text-neutral-400">
-          Paste this prompt into ChatGPT, Gemini, Claude or any AI chat. It will give you a CSV file. Come back here
-          and upload it.
+          Paste this prompt into ChatGPT, Gemini, Claude or any AI chat. It will reply with CSV text. Come back here
+          and paste it.
         </p>
       </div>
 
@@ -220,7 +220,7 @@ export const AiPromptStep: React.FC<AiPromptStepProps> = ({
           onClick={onNext}
           className="px-4 py-2.5 bg-outwit-yellow hover:bg-yellow-400 text-outwit-black font-extrabold rounded-xl text-sm uppercase flex items-center gap-1.5"
         >
-          <span>Next: upload the CSV</span>
+          <span>Next: import questions</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>

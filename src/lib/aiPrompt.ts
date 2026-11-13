@@ -97,12 +97,12 @@ export function buildAiQuestionPrompt(input: AiPromptInput): string {
     '5. Mix the lengths and formats so it does not feel repetitive. Order them from easier warm-ups to wilder ones.',
     '',
     'HOW TO DELIVER (very important)',
-    `- Create a downloadable CSV FILE named ${APP_INFO.AI_QUESTIONS_FILE_NAME} using whatever file tool you have (code interpreter, file creation, canvas, artifacts) and give me the file to download. Do NOT just type the questions in your chat reply.`,
-    `- File format: UTF-8, first line is the header number,question then exactly ${count} rows. Put every question in double quotes and double any quote mark inside it. Example:`,
+    `- Output the CSV text directly in your reply inside a single copy-pastable code block (formatted as ${APP_INFO.AI_QUESTIONS_FILE_NAME}). Do NOT create or provide a downloadable file; provide the raw CSV text directly in the chat so I can copy and paste it into ${APP_INFO.NAME}.`,
+    `- Format: UTF-8 plain text, first line is the header number,question then exactly ${count} rows. Put every question in double quotes and double any quote mark inside it. Example:`,
     'number,question',
     '1,"Describe our group chat in the most dramatic way possible."',
     `- Before sending, check: exactly ${count} rows, each under ${maxLen} characters, no duplicates, every row uses a detail from my group.`,
-    '- Your chat reply should be one short sentence plus the file. Only if you truly cannot create files, reply with the CSV inside a single code block and nothing else.',
+    '- Your chat reply should contain only the copy-pastable CSV code block so it can be pasted directly.',
   );
 
   return lines.join('\n');

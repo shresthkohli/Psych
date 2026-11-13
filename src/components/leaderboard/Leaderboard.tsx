@@ -26,8 +26,13 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
       </div>
 
       <div className="space-y-2">
-        {entries.map((entry, index) => {
-          const isTop1 = entry.rank === 1;
+        {entries.length === 0 ? (
+          <p className="text-xs text-neutral-500 italic text-center py-4">
+            No participants on the leaderboard yet.
+          </p>
+        ) : (
+          entries.map((entry, index) => {
+            const isTop1 = entry.rank === 1;
           const isTop2 = entry.rank === 2;
           const isTop3 = entry.rank === 3;
 
@@ -95,7 +100,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
               </div>
             </div>
           );
-        })}
+        }))}
       </div>
     </div>
   );

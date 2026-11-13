@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Upload, ArrowLeft, CheckCircle2, AlertCircle, ClipboardPaste } from 'lucide-react';
 import { GAME_LIMITS } from '../../constants/gameLimits';
 import { parseQuestionCsv, prepareImport, ImportPreview } from '../../lib/questionCsv';
 
@@ -18,7 +18,7 @@ export const AiImportStep: React.FC<AiImportStepProps> = ({
   onBack,
   onDone,
 }) => {
-  const [pasteOpen, setPasteOpen] = useState(false);
+  const [mode, setMode] = useState<'paste' | 'upload'>('paste');
   const [pastedText, setPastedText] = useState('');
   const [reading, setReading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -34,7 +34,12 @@ export const AiImportStep: React.FC<AiImportStepProps> = ({
     setImportError(null);
     setPreview(null);
     try {
-      const parsed = await parseQuestionCsv(rawText);
+      const clean = rawText
+        .trim()
+        .replace(/^```(?:csv)?\r?\n/i, '')
+        .replace(/\r?\n```$/i, '')
+        .trim();
+      const parsed = await parseQuestionCsv(clean);
       setPreview(prepareImport(parsed, existingTexts, remainingSlots));
     } catch (e) {
       setParseError(e instanceof Error ? e.message : 'Could not read CSV.');
@@ -73,56 +78,92 @@ export const AiImportStep: React.FC<AiImportStepProps> = ({
 
   return (
     <div className="space-y-4">
-      <div className="space-y-2">
-        <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300" htmlFor="ai-csv-file">
-          Upload CSV file (max {maxKb} KB)
-        </label>
-        <label
-          htmlFor="ai-csv-file"
-          className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed border-neutral-700 hover:border-outwit-yellow bg-outwit-black cursor-pointer text-sm text-neutral-300"
-        >
-          <Upload className="w-4 h-4 text-outwit-yellow" />
-          <span>Choose .csv or .txt file</span>
-          <input
-            id="ai-csv-file"
-            type="file"
-            accept=".csv,text/csv,text/plain"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-        </label>
-      </div>
-
-      <div>
+      {/* Mode Switcher Tabs */}
+      <div className="flex rounded-xl bg-outwit-black p-1 border border-neutral-800">
         <button
           type="button"
-          onClick={() => setPasteOpen((prev) => !prev)}
-          className="text-xs font-bold text-outwit-yellow hover:underline"
+          onClick={() => {
+            setMode('paste');
+            setParseError(null);
+            setImportError(null);
+          }}
+          className={`flex-1 py-2 px-3 rounded-lg text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all ${
+            mode === 'paste'
+              ? 'bg-outwit-yellow text-outwit-black shadow-brutal'
+              : 'text-neutral-400 hover:text-white hover:bg-neutral-800/60'
+          }`}
         >
-          {pasteOpen ? 'Hide pasted text' : 'Paste CSV text instead'}
+          <ClipboardPaste className="w-4 h-4" />
+          <span>Paste CSV Text</span>
         </button>
-        {pasteOpen && (
-          <div className="mt-2 space-y-2">
-            <textarea
-              rows={4}
-              value={pastedText}
-              onChange={(e) => setPastedText(e.target.value)}
-              placeholder="Paste CSV text returned by AI..."
-              className="w-full bg-outwit-black border border-neutral-700 rounded-xl p-2.5 text-xs font-mono text-white focus:border-outwit-yellow focus:outline-none"
-            />
+        <button
+          type="button"
+          onClick={() => {
+            setMode('upload');
+            setParseError(null);
+            setImportError(null);
+          }}
+          className={`flex-1 py-2 px-3 rounded-lg text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all ${
+            mode === 'upload'
+              ? 'bg-outwit-yellow text-outwit-black shadow-brutal'
+              : 'text-neutral-400 hover:text-white hover:bg-neutral-800/60'
+          }`}
+        >
+          <Upload className="w-4 h-4" />
+          <span>Upload .CSV File</span>
+        </button>
+      </div>
+
+      {mode === 'paste' ? (
+        <div className="space-y-2">
+          <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300" htmlFor="ai-csv-textarea">
+            Paste CSV Questions Text
+          </label>
+          <textarea
+            id="ai-csv-textarea"
+            rows={5}
+            value={pastedText}
+            onChange={(e) => setPastedText(e.target.value)}
+            placeholder={'number,question\n1,"Who in this room is most likely to show up 30 minutes late with iced coffee?"\n2,"What is the secret reason why our group chat was created?"'}
+            className="w-full bg-outwit-black border border-neutral-700 rounded-xl p-3 text-xs font-mono text-white placeholder-neutral-500 focus:border-outwit-yellow focus:outline-none"
+          />
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] text-neutral-400">
+              Copy the CSV text block returned by your AI chat and paste it here.
+            </span>
             <button
               type="button"
               disabled={reading || pastedText.trim().length === 0}
               onClick={() => runPipeline(pastedText)}
-              className="px-3 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-bold disabled:opacity-40"
+              className="px-3.5 py-1.5 rounded-lg bg-outwit-yellow hover:bg-yellow-400 text-outwit-black text-xs font-extrabold uppercase disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              Read text
+              {reading ? 'Parsing...' : 'Parse & Preview'}
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300" htmlFor="ai-csv-file">
+            Upload CSV file (max {maxKb} KB)
+          </label>
+          <label
+            htmlFor="ai-csv-file"
+            className="flex items-center justify-center gap-2 p-6 rounded-xl border-2 border-dashed border-neutral-700 hover:border-outwit-yellow bg-outwit-black cursor-pointer text-sm text-neutral-300 transition-colors"
+          >
+            <Upload className="w-5 h-5 text-outwit-yellow" />
+            <span>Choose .csv or .txt file</span>
+            <input
+              id="ai-csv-file"
+              type="file"
+              accept=".csv,text/csv,text/plain"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </label>
+        </div>
+      )}
 
-      {reading && <p className="text-xs text-outwit-yellow">Reading...</p>}
+      {reading && <p className="text-xs text-outwit-yellow">Reading and validating questions...</p>}
       {parseError && (
         <div className="flex items-center gap-2 p-2.5 rounded-lg bg-outwit-red/10 border border-outwit-red/40 text-xs text-outwit-red">
           <AlertCircle className="w-4 h-4 shrink-0" />

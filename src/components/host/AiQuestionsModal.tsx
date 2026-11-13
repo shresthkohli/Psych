@@ -58,7 +58,7 @@ export const AiQuestionsModal: React.FC<AiQuestionsModalProps> = ({
                   ? 'Import complete'
                   : step === 'prompt'
                     ? 'Step 1 of 2: Build prompt'
-                    : 'Step 2 of 2: Import CSV'}
+                    : 'Step 2 of 2: Import questions'}
               </p>
             </div>
           </div>

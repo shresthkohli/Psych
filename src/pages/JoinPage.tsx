@@ -4,6 +4,7 @@ import { LogIn, AlertCircle, ArrowLeft, Users, Sparkles } from 'lucide-react';
 import { Header } from '../components/common/Header';
 import { getRoomByCode, joinRoom } from '../services/firestoreService';
 import { getOrCreateAnonymousUser, sessionStore } from '../services/authService';
+import { APP_INFO } from '../constants/appInfo';
 
 export const JoinPage: React.FC = () => {
   const navigate = useNavigate();
@@ -102,7 +103,7 @@ export const JoinPage: React.FC = () => {
               Enter The Arena
             </h1>
             <p className="text-xs text-neutral-400">
-              No account required. Jump right into the live college game.
+              No account required. Jump right into the live party game.
             </p>
           </div>
 
@@ -130,7 +131,7 @@ export const JoinPage: React.FC = () => {
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="e.g. SuratKeLocho"
+                placeholder="e.g. QuizWhiz"
                 maxLength={20}
                 className="w-full p-3.5 bg-psych-black border-2 border-neutral-700 focus:border-psych-yellow rounded-xl text-base text-white placeholder-neutral-600 focus:outline-none transition-colors"
                 required
@@ -167,7 +168,7 @@ export const JoinPage: React.FC = () => {
       </main>
 
       <footer className="py-4 text-center text-xs text-neutral-500 relative z-10">
-        E-Cell SVNIT • Live Multiplayer Game
+        {APP_INFO.FOOTER}
       </footer>
     </div>
   );

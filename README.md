@@ -1,6 +1,6 @@
-# PSYCH — Real-Time Multiplayer Party Game for E-Cell SVNIT
+# PSYCH — Real-Time Multiplayer Party Game
 
-A mobile-first, server-authoritative live multiplayer game designed for campus events with 10–15+ simultaneous participants and 1 host controlling the game show from a dashboard or projector screen.
+A mobile-first, server-authoritative live multiplayer game designed for house parties and live events and 1 host controlling the game show from a dashboard or projector screen.
 
 ---
 
@@ -50,7 +50,7 @@ Follow these simple steps in the Firebase Console:
 
 ### Step 1: Create a Firebase Project
 1. Go to [Firebase Console](https://console.firebase.google.com/) and click **"Add project"**.
-2. Name it (e.g. `psych-svnit`). Disable Google Analytics if not needed, then click **Create Project**.
+2. Name it (e.g. `psych-game`). Disable Google Analytics if not needed, then click **Create Project**.
 
 ### Step 2: Enable Anonymous Authentication
 1. In the left navigation, go to **Build** -> **Authentication** and click **Get Started**.
@@ -59,7 +59,7 @@ Follow these simple steps in the Firebase Console:
 
 ### Step 3: Create Cloud Firestore
 1. In the left navigation, go to **Build** -> **Firestore Database** and click **Create database**.
-2. Choose a database location (e.g., `asia-south1` for Mumbai, closest to Surat/SVNIT).
+2. Choose a database location: choose the region closest to your players (e.g. `asia-south1` for India).
 3. Choose **Start in production mode** (our `firestore.rules` file contains the complete security model).
 
 ### Step 4: Register Web App & Get Config
@@ -68,9 +68,9 @@ Follow these simple steps in the Firebase Console:
 3. Copy the `firebaseConfig` keys into your `.env` file:
    ```env
    VITE_FIREBASE_API_KEY=AIzaSy...
-   VITE_FIREBASE_AUTH_DOMAIN=psych-svnit.firebaseapp.com
-   VITE_FIREBASE_PROJECT_ID=psych-svnit
-   VITE_FIREBASE_STORAGE_BUCKET=psych-svnit.appspot.com
+   VITE_FIREBASE_AUTH_DOMAIN=psych-game.firebaseapp.com
+   VITE_FIREBASE_PROJECT_ID=psych-game
+   VITE_FIREBASE_STORAGE_BUCKET=psych-game.appspot.com
    VITE_FIREBASE_MESSAGING_SENDER_ID=...
    VITE_FIREBASE_APP_ID=1:...
    VITE_FIREBASE_MEASUREMENT_ID=G-...
@@ -116,7 +116,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser or phone on 
 
 ## 📱 Routes & Features
 
-- `/` — Landing page with hero, E-Cell SVNIT badge, scoring rules preview, and room creator modal.
+- `/` — Landing page with hero, scoring rules preview, and room creator modal.
 - `/join` — Fast participant join route (prefills room code from QR scan).
 - `/room/:roomCode` — Participant game interface adapting across all 8 phases.
 - `/host/:roomCode` — Host control console (phase advancement, moderation, pause/resume, round restarts, CSV export).
@@ -129,6 +129,6 @@ Open [http://localhost:5173](http://localhost:5173) in your browser or phone on 
 
 - [ ] **Host Device**: Use a laptop connected to the classroom projector with `/display/:roomCode` open.
 - [ ] **Host Controls**: Open `/host/:roomCode` on the laptop or host phone.
-- [ ] **QR Code**: Present the lobby QR code on the projector screen for students to scan.
+- [ ] **QR Code**: Present the lobby QR code on the projector screen for players to scan.
 - [ ] **Audio**: Sound effects are synthesized locally via Web Audio API and muted by default. Unmute on the projector laptop to play countdown ticks and reveal fanfares.
 - [ ] **Backup**: Export final standings as CSV with one click on the Host dashboard at the end of the event.

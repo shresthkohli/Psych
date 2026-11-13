@@ -65,7 +65,7 @@ export const GameFinishedPhase: React.FC<GameFinishedPhaseProps> = ({
           CHAMPIONS OF PSYCH
         </h1>
         <p className="text-sm text-neutral-400">
-          Official Final Standings — E-Cell, SVNIT Surat
+          Final Standings{room.eventLabel ? ` — ${room.eventLabel}` : ''}
         </p>
       </div>
 

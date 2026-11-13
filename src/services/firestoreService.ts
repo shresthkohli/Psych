@@ -17,6 +17,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { GAME_LIMITS } from '../constants/gameLimits';
+import { APP_INFO } from '../constants/appInfo';
 import { getJoinBlockReason, getStartBlockReason, missingQuestionMessage } from '../lib/questionRules';
 import { questionDocRef } from './questionService';
 import {
@@ -59,8 +60,8 @@ export async function createRoom(
 
   const roomData: Omit<Room, 'id'> = {
     roomCode,
-    roomName: roomName || 'PSYCH Live',
-    eventLabel: eventLabel || 'E-Cell SVNIT',
+    roomName: (roomName.trim() || APP_INFO.DEFAULT_ROOM_NAME).slice(0, GAME_LIMITS.ROOM_NAME_MAX_LENGTH),
+    eventLabel: eventLabel.trim().slice(0, GAME_LIMITS.EVENT_LABEL_MAX_LENGTH),
     hostUid,
     hostSecret,
     status: 'LOBBY',

@@ -139,11 +139,11 @@ export const AiPromptStep: React.FC<AiPromptStepProps> = ({
           maxLength={GAME_LIMITS.AI_CONTEXT_MAX_LENGTH}
           value={context}
           onChange={(e) => setContext(e.target.value)}
-          placeholder="Hostel block, college clubs, recurring incidents..."
+          placeholder="Inside jokes, favourite hangouts, running gags, recent events..."
           className="w-full bg-psych-black border border-neutral-700 rounded-xl p-2.5 text-sm text-white focus:border-psych-yellow focus:outline-none"
         />
         <p className="text-[11px] text-neutral-400">
-          The more specific you are (places, events, running jokes, club names), the less generic the questions
+          The more specific you are (places, events, running jokes, group nicknames), the less generic the questions
         </p>
       </div>
 

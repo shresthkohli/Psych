@@ -16,7 +16,7 @@ describe('gameLogic: countWords & validateAnswerWords', () => {
     expect(countWords('   ')).toBe(0);
     expect(countWords('\n\n\t   ')).toBe(0);
     expect(countWords('Hello world')).toBe(2);
-    expect(countWords('   Describe   E-Cell   at   SVNIT   \n\nnow!  ')).toBe(5);
+    expect(countWords('   Describe   our   party   tonight   \n\nnow!  ')).toBe(5);
   });
 
   it('validates answer within bounds', () => {

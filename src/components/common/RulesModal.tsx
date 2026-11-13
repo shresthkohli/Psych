@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Award, CheckCircle2, Trophy, HelpCircle } from 'lucide-react';
+import { APP_INFO } from '../../constants/appInfo';
 
 interface RulesModalProps {
   isOpen: boolean;
@@ -20,7 +21,7 @@ export const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose }) => {
             </div>
             <div>
               <h2 className="text-xl font-display font-extrabold text-white tracking-tight">HOW SCORING WORKS</h2>
-              <p className="text-xs text-neutral-400">Official PSYCH Scoring Rules — E-Cell SVNIT</p>
+              <p className="text-xs text-neutral-400">{APP_INFO.NAME} Scoring Rules</p>
             </div>
           </div>
           <button

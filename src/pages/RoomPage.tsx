@@ -28,6 +28,7 @@ import { SubmissionLockedPhase } from '../components/phases/SubmissionLockedPhas
 import { VotingPhase } from '../components/phases/VotingPhase';
 import { VotingLockedPhase } from '../components/phases/VotingLockedPhase';
 import { ResultsPhase } from '../components/phases/ResultsPhase';
+import { APP_INFO } from '../constants/appInfo';
 import { GameFinishedPhase } from '../components/phases/GameFinishedPhase';
 import { AlertCircle, WifiOff } from 'lucide-react';
 
@@ -313,7 +314,7 @@ export const RoomPage: React.FC = () => {
             RETURN HOME
           </a>
         </div>
-        <footer className="py-4 text-center text-xs text-neutral-500">PSYCH — E-Cell SVNIT</footer>
+        <footer className="py-4 text-center text-xs text-neutral-500">{APP_INFO.FOOTER}</footer>
       </div>
     );
   }
@@ -405,7 +406,7 @@ export const RoomPage: React.FC = () => {
       </main>
 
       <footer className="py-4 text-center text-xs text-neutral-500 relative z-10">
-        PSYCH • E-Cell SVNIT Live Multiplayer
+        {APP_INFO.FOOTER}
       </footer>
     </div>
   );

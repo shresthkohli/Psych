@@ -4,12 +4,12 @@ import { getAuth, signInAnonymously } from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBdk_GjSlEUL0Ug0_8hXUrYKq-jgRevK0k",
-  authDomain: "psych-ecell-svnit.firebaseapp.com",
-  projectId: "psych-ecell-svnit",
-  storageBucket: "psych-ecell-svnit.firebasestorage.app",
-  messagingSenderId: "550693453723",
-  appId: "1:550693453723:web:f673fdb63baa07c84d2b3e",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || '',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || '',
 };
 
 describe('Live Firebase Backend Smoke Test', () => {

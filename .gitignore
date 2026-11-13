@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 
 .env
+
+# Firebase CLI / build output
+.firebase/
+functions/lib/
+functions/node_modules/

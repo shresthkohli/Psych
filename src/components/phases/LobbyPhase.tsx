@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Copy, Check, Users, Sparkles, Shield, ArrowRight } from 'lucide-react';
 import { Room, Player } from '../../types/game';
+import { APP_INFO } from '../../constants/appInfo';
 
 interface LobbyPhaseProps {
   room: Room;
@@ -31,12 +32,14 @@ export const LobbyPhase: React.FC<LobbyPhaseProps> = ({
     <div className="w-full max-w-2xl mx-auto space-y-6 animate-fade-in">
       {/* Event Banner */}
       <div className="text-center space-y-1">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-psych-yellow/10 border border-psych-yellow/30 text-psych-yellow text-xs font-bold tracking-wide uppercase">
-          <Sparkles className="w-3.5 h-3.5" />
-          {room.eventLabel || 'E-Cell SVNIT'} Present
-        </span>
+        {room.eventLabel && (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-psych-yellow/10 border border-psych-yellow/30 text-psych-yellow text-xs font-bold tracking-wide uppercase">
+            <Sparkles className="w-3.5 h-3.5" />
+            {room.eventLabel} Present
+          </span>
+        )}
         <h1 className="text-3xl md:text-4xl font-display font-black text-white tracking-tight">
-          {room.roomName || 'PSYCH Live'}
+          {room.roomName || APP_INFO.NAME}
         </h1>
         <p className="text-sm text-neutral-400">
           Round {room.currentRoundNumber} of {room.settings.totalRounds} • Waiting for players

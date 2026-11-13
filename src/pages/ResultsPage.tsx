@@ -4,6 +4,7 @@ import { getRoomByCode, subscribeToRoom, subscribeToPlayers } from '../services/
 import { Room, Player } from '../types/game';
 import { Header } from '../components/common/Header';
 import { GameFinishedPhase } from '../components/phases/GameFinishedPhase';
+import { APP_INFO } from '../constants/appInfo';
 
 export const ResultsPage: React.FC = () => {
   const { roomCode } = useParams<{ roomCode: string }>();
@@ -72,7 +73,7 @@ export const ResultsPage: React.FC = () => {
         />
       </main>
       <footer className="py-4 text-center text-xs text-neutral-500">
-        PSYCH • E-Cell SVNIT
+        {APP_INFO.FOOTER}
       </footer>
     </div>
   );

@@ -23,12 +23,12 @@ import {
 import { RoomSettings } from '../src/types/game';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBdk_GjSlEUL0Ug0_8hXUrYKq-jgRevK0k",
-  authDomain: "psych-ecell-svnit.firebaseapp.com",
-  projectId: "psych-ecell-svnit",
-  storageBucket: "psych-ecell-svnit.firebasestorage.app",
-  messagingSenderId: "550693453723",
-  appId: "1:550693453723:web:f673fdb63baa07c84d2b3e",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || '',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || '',
 };
 
 describe('PSYCH Live End-to-End Game Lifecycle on Production Firebase', () => {
@@ -50,15 +50,15 @@ describe('PSYCH Live End-to-End Game Lifecycle on Production Firebase', () => {
       showSubmissionsCount: true,
     };
     const sampleQuestions = [
-      { id: 'q1', text: 'Describe E-Cell SVNIT in the most fun way possible.' },
-      { id: 'q2', text: 'What happens at RMS after 9 PM?' },
+      { id: 'q1', text: 'Describe this party in the most fun way possible.' },
+      { id: 'q2', text: 'What happens at midnight at this party?' },
     ];
 
     const { roomId, roomCode } = await createRoom(
       hostUid,
       hostSecret,
-      'Live SVNIT E2E Championship',
-      'E-Cell SVNIT',
+      'Live E2E Championship',
+      'Test Event',
       settings,
       sampleQuestions
     );
@@ -74,8 +74,8 @@ describe('PSYCH Live End-to-End Game Lifecycle on Production Firebase', () => {
     expect(fetchedRoom?.currentRoundNumber).toBe(1);
 
     // 3. Host player joins
-    const hostPlayer = await joinRoom(roomId, hostUid, 'Host Shresth (SVNIT)', hostUid);
-    expect(hostPlayer.displayName).toBe('Host Shresth (SVNIT)');
+    const hostPlayer = await joinRoom(roomId, hostUid, 'Host Tester', hostUid);
+    expect(hostPlayer.displayName).toBe('Host Tester');
 
     // 4. Host starts Round 1
     const roundId = fetchedRoom?.currentRoundId || 'round_1';
@@ -89,7 +89,7 @@ describe('PSYCH Live End-to-End Game Lifecycle on Production Firebase', () => {
       roomId,
       roundId,
       hostUid,
-      'E-Cell SVNIT is where sleep is optional, tea is fuel, and every conversation sounds like a Shark Tank pitch!',
+      'This party is where sleep is optional, snacks are fuel, and every conversation sounds like a Shark Tank pitch!',
       settings
     );
     expect(ans1.success).toBe(true);

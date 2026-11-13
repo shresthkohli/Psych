@@ -34,7 +34,7 @@ describe('Voting Bug Fix & Phase Guard Verification', () => {
       hostUid,
       hostSecret,
       'Guard Test Room',
-      'E-Cell SVNIT',
+      'Test Event',
       settings,
       [{ id: 'q1', text: 'Test question?' }]
     );
@@ -84,7 +84,7 @@ describe('Voting Bug Fix & Phase Guard Verification', () => {
       hostUid,
       hostSecret,
       'Voting Guard Room',
-      'E-Cell SVNIT',
+      'Test Event',
       settings,
       [{ id: 'q1', text: 'Another test question?' }]
     );

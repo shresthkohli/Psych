@@ -99,7 +99,7 @@ export function buildAiQuestionPrompt(input: AiPromptInput): string {
     '- Create a downloadable CSV FILE named psych_questions.csv using whatever file tool you have (code interpreter, file creation, canvas, artifacts) and give me the file to download. Do NOT just type the questions in your chat reply.',
     `- File format: UTF-8, first line is the header number,question then exactly ${count} rows. Put every question in double quotes and double any quote mark inside it. Example:`,
     'number,question',
-    '1,"Describe our hostel mess food in the most dramatic way possible."',
+    '1,"Describe our group chat in the most dramatic way possible."',
     `- Before sending, check: exactly ${count} rows, each under ${maxLen} characters, no duplicates, every row uses a detail from my group.`,
     '- Your chat reply should be one short sentence plus the file. Only if you truly cannot create files, reply with the CSV inside a single code block and nothing else.',
   );

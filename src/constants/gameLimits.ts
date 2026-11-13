@@ -14,5 +14,7 @@ export const GAME_LIMITS = {
   AI_CONTEXT_MAX_LENGTH: 600, // host free-text "about my group"
   AI_TOPICS_MAX_LENGTH: 200, // include / avoid topic fields
   AI_NICKNAME_MAX_LENGTH: 30, // per nickname inside the prompt
+  ROOM_NAME_MAX_LENGTH: 40,
+  EVENT_LABEL_MAX_LENGTH: 40,
 } as const;
 

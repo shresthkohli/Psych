@@ -6,6 +6,7 @@ import { RulesModal } from '../components/common/RulesModal';
 import { createRoom } from '../services/firestoreService';
 import { getOrCreateAnonymousUser, sessionStore } from '../services/authService';
 import { GAME_LIMITS } from '../constants/gameLimits';
+import { APP_INFO } from '../constants/appInfo';
 import { clampTotalRounds, clampMaxPlayers, minQuestionsToStart } from '../lib/questionRules';
 import { RoomSettings } from '../types/game';
 
@@ -16,8 +17,8 @@ export const LandingPage: React.FC = () => {
   const [roomModalOpen, setRoomModalOpen] = useState(false);
 
   // Room config state
-  const [roomName, setRoomName] = useState('PSYCH SVNIT Special');
-  const [eventLabel, setEventLabel] = useState('E-Cell SVNIT');
+  const [roomName, setRoomName] = useState<string>(APP_INFO.DEFAULT_ROOM_NAME);
+  const [eventLabel, setEventLabel] = useState<string>('');
   const [totalRounds, setTotalRounds] = useState<number>(GAME_LIMITS.DEFAULT_TOTAL_ROUNDS);
   const [maxPlayers, setMaxPlayers] = useState<number>(GAME_LIMITS.DEFAULT_MAX_PLAYERS);
   const [answerDuration, setAnswerDuration] = useState(120);
@@ -48,7 +49,7 @@ export const LandingPage: React.FC = () => {
         showSubmissionsCount: true,
       };
 
-      const { roomCode } = await createRoom(hostUid, hostSecret, roomName, eventLabel, settings, []);
+      const { roomCode } = await createRoom(hostUid, hostSecret, roomName.trim(), eventLabel.trim(), settings, []);
 
       // Save host token
       sessionStore.saveHostToken(roomCode, hostSecret);
@@ -74,10 +75,10 @@ export const LandingPage: React.FC = () => {
       {/* Hero Section */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-12 relative z-10">
         <div className="max-w-3xl mx-auto text-center space-y-6">
-          {/* E-Cell Badge */}
+          {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-psych-dark border border-psych-yellow/40 text-xs font-mono font-bold tracking-wider text-psych-yellow shadow-md uppercase">
             <Sparkles className="w-4 h-4 text-psych-yellow" />
-            <span>Official Event by E-Cell, SVNIT Surat</span>
+            <span>{APP_INFO.BADGE}</span>
           </div>
 
           {/* Huge PSYCH Title */}
@@ -150,7 +151,7 @@ export const LandingPage: React.FC = () => {
 
       {/* Footer */}
       <footer className="py-6 border-t border-neutral-800/80 text-center text-xs text-neutral-500 relative z-10">
-        <p>Built with ❤️ for E-Cell SVNIT • Mobile-First Real-Time Experience</p>
+        <p>Built with ❤️ • Mobile-First Real-Time Experience</p>
       </footer>
 
       {/* Rules Modal */}
@@ -175,15 +176,33 @@ export const LandingPage: React.FC = () => {
             <form onSubmit={handleCreateRoom} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-1">
-                  Room Name / Event
+                  Room Name
                 </label>
                 <input
                   type="text"
+                  maxLength={GAME_LIMITS.ROOM_NAME_MAX_LENGTH}
                   value={roomName}
                   onChange={(e) => setRoomName(e.target.value)}
                   className="w-full p-3 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none"
                   required
                 />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-300 mb-1">
+                  Event or group (optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Friday house party"
+                  maxLength={GAME_LIMITS.EVENT_LABEL_MAX_LENGTH}
+                  value={eventLabel}
+                  onChange={(e) => setEventLabel(e.target.value)}
+                  className="w-full p-3 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none"
+                />
+                <p className="text-[11px] text-neutral-500 mt-1">
+                  Shown in the lobby and used to personalise AI-generated questions.
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">

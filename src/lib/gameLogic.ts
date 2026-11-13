@@ -231,7 +231,7 @@ export function computeLeaderboard(
  * Avoids ambiguous characters like O, 0, I, 1.
  */
 export function generateRoomCode(): string {
-  const words = ['MIND', 'PSYCH', 'SVNIT', 'ECEL', 'BRAIN', 'SHARK', 'FLASH', 'TITAN', 'NOVA', 'SMART'];
+  const words = ['MIND', 'PSYCH', 'PARTY', 'CHAOS', 'BRAIN', 'SHARK', 'FLASH', 'TITAN', 'NOVA', 'SMART'];
   const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
   const prefix = words[Math.floor(Math.random() * words.length)];
   let suffix = '';

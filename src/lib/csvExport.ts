@@ -1,9 +1,10 @@
 import { LeaderboardEntry } from '../types/game';
+import { APP_INFO } from '../constants/appInfo';
 
 export function exportLeaderboardToCSV(
   roomCode: string,
   leaderboard: LeaderboardEntry[],
-  eventName: string = 'PSYCH - E-Cell SVNIT'
+  eventName: string = APP_INFO.NAME
 ) {
   const headers = ['Rank', 'Player Name', 'Total Score', 'Player ID'];
   const rows = leaderboard.map((entry) => [

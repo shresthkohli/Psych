@@ -35,9 +35,6 @@ export const Header: React.FC<HeaderProps> = ({ roomCode, playerCount, isHost })
           <div>
             <span className="font-display font-extrabold text-xl tracking-tight text-white flex items-center gap-1">
               PSYCH
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-psych-red/90 text-white font-semibold tracking-wider uppercase ml-1">
-                E-Cell
-              </span>
             </span>
           </div>
         </a>

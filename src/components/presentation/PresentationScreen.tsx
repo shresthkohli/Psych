@@ -51,12 +51,14 @@ export const PresentationScreen: React.FC<PresentationScreenProps> = ({
               <h1 className="text-3xl md:text-4xl font-display font-black tracking-tight text-white">
                 PSYCH
               </h1>
-              <span className="px-2 py-0.5 rounded bg-psych-red text-xs font-bold tracking-wider uppercase">
-                E-Cell SVNIT
-              </span>
+              {room.eventLabel && (
+                <span className="px-2 py-0.5 rounded bg-psych-red text-xs font-bold tracking-wider uppercase">
+                  {room.eventLabel}
+                </span>
+              )}
             </div>
             <p className="text-xs text-neutral-400 font-mono">
-              Live College Multiplayer Social Experiment
+              Live Multiplayer Party Game
             </p>
           </div>
         </div>
@@ -212,7 +214,11 @@ export const PresentationScreen: React.FC<PresentationScreenProps> = ({
 
       {/* Footer */}
       <footer className="pt-6 border-t border-neutral-800 flex items-center justify-between text-xs text-neutral-400">
-        <span>Organized by <strong>E-Cell, SVNIT Surat</strong></span>
+        {room.eventLabel ? (
+          <span>Organized by <strong>{room.eventLabel}</strong></span>
+        ) : (
+          <span />
+        )}
         <span>PSYCH Live Engine v1.0</span>
       </footer>
     </div>

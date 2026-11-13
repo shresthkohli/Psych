@@ -26,6 +26,7 @@ import { updateTotalRounds, updateMaxPlayers } from '../services/roomSettingsSer
 import { QuestionManager } from '../components/host/QuestionManager';
 import { AiQuestionsModal } from '../components/host/AiQuestionsModal';
 import { getStartBlockReason, getRemainingQuestionSlots } from '../lib/questionRules';
+import { APP_INFO } from '../constants/appInfo';
 import { AlertCircle, ShieldAlert, KeyRound } from 'lucide-react';
 import { doc, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -322,7 +323,7 @@ export const HostPage: React.FC = () => {
             </form>
           </div>
         </main>
-        <footer className="py-4 text-center text-xs text-neutral-500">PSYCH — E-Cell SVNIT</footer>
+        <footer className="py-4 text-center text-xs text-neutral-500">{APP_INFO.FOOTER}</footer>
       </div>
     );
   }
@@ -382,7 +383,7 @@ export const HostPage: React.FC = () => {
       </main>
 
       <footer className="py-4 text-center text-xs text-neutral-500">
-        PSYCH Host Administration Console • E-Cell SVNIT
+        {APP_INFO.NAME} Host Console
       </footer>
     </div>
   );

@@ -33,8 +33,8 @@ describe('PSYCH 3-Player Live Firebase Integration Test', () => {
       showSubmissionsCount: true,
     };
     const sampleQuestions = [
-      { id: 'q1', text: 'Who has the best pitch in E-Cell?' },
-      { id: 'q2', text: 'What is the secret behind SVNIT startups?' },
+      { id: 'q1', text: 'Who has the best pitch in the group?' },
+      { id: 'q2', text: 'What is the secret behind a great party?' },
     ];
 
     console.log('Step 1: creating room...');
@@ -42,7 +42,7 @@ describe('PSYCH 3-Player Live Firebase Integration Test', () => {
       hostUid,
       hostSecret,
       'Live 3-Player Championship',
-      'E-Cell SVNIT',
+      'Test Event',
       settings,
       sampleQuestions
     );
@@ -50,9 +50,9 @@ describe('PSYCH 3-Player Live Firebase Integration Test', () => {
 
     // 2. Three players join
     console.log('Step 2: players joining...');
-    const playerA = await joinRoom(roomId, 'live_pA', 'Alice SVNIT', 'uid_pA');
-    const playerB = await joinRoom(roomId, 'live_pB', 'Bob SVNIT', 'uid_pB');
-    const playerC = await joinRoom(roomId, 'live_pC', 'Charlie SVNIT', 'uid_pC');
+    const playerA = await joinRoom(roomId, 'live_pA', 'Alice', 'uid_pA');
+    const playerB = await joinRoom(roomId, 'live_pB', 'Bob', 'uid_pB');
+    const playerC = await joinRoom(roomId, 'live_pC', 'Charlie', 'uid_pC');
     console.log('Step 2 done, players joined');
 
     // 3. Start Round 1

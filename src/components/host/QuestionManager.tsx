@@ -92,11 +92,11 @@ export const QuestionManager: React.FC<QuestionManagerProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-psych-cardBg border border-psych-borderDark rounded-2xl p-5 space-y-4">
+    <div className="w-full max-w-4xl mx-auto bg-outwit-cardBg border border-outwit-borderDark rounded-2xl p-5 space-y-4">
       {/* 1. Header & Counter */}
       <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
         <h2 className="text-base font-bold text-white uppercase tracking-wider">Questions</h2>
-        <span className="font-mono text-sm font-bold text-psych-yellow">
+        <span className="font-mono text-sm font-bold text-outwit-yellow">
           {getQuestionCount(room)} / {GAME_LIMITS.MAX_QUESTIONS_PER_GAME}
         </span>
       </div>
@@ -105,7 +105,7 @@ export const QuestionManager: React.FC<QuestionManagerProps> = ({
       <div className="text-xs">
         {room.status === 'LOBBY' && room.currentRoundNumber === 1 ? (
           startReason ? (
-            <p className="text-psych-yellow font-medium">{startReason}</p>
+            <p className="text-outwit-yellow font-medium">{startReason}</p>
           ) : (
             <p className="text-green-400 font-medium">Ready to start — you can keep adding questions during the game.</p>
           )
@@ -155,7 +155,7 @@ export const QuestionManager: React.FC<QuestionManagerProps> = ({
               </button>
             </div>
           </div>
-          {totalRoundsError && <p className="text-xs text-psych-red">{totalRoundsError}</p>}
+          {totalRoundsError && <p className="text-xs text-outwit-red">{totalRoundsError}</p>}
         </div>
       )}
 
@@ -174,10 +174,10 @@ export const QuestionManager: React.FC<QuestionManagerProps> = ({
               : 'Upcoming';
 
             return (
-              <div key={q.id} className="p-3 bg-psych-black rounded-xl border border-neutral-800 space-y-2">
+              <div key={q.id} className="p-3 bg-outwit-black rounded-xl border border-neutral-800 space-y-2">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="px-2 py-0.5 rounded-md bg-neutral-800 text-psych-yellow font-mono text-xs font-bold">
+                    <span className="px-2 py-0.5 rounded-md bg-neutral-800 text-outwit-yellow font-mono text-xs font-bold">
                       Round {q.roundNumber}
                     </span>
                     <span
@@ -185,7 +185,7 @@ export const QuestionManager: React.FC<QuestionManagerProps> = ({
                         tag === 'Asked'
                           ? 'bg-neutral-800 text-neutral-400'
                           : tag === 'Next up'
-                          ? 'bg-psych-yellow/20 text-psych-yellow border border-psych-yellow/40'
+                          ? 'bg-outwit-yellow/20 text-outwit-yellow border border-outwit-yellow/40'
                           : 'bg-neutral-800 text-neutral-300'
                       }`}
                     >
@@ -212,13 +212,13 @@ export const QuestionManager: React.FC<QuestionManagerProps> = ({
                         maxLength={GAME_LIMITS.MAX_QUESTION_LENGTH}
                         value={editDraft}
                         onChange={(e) => setEditDraft(e.target.value)}
-                        className="flex-1 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none p-3"
+                        className="flex-1 bg-outwit-black border border-neutral-700 rounded-xl text-white text-sm focus:border-outwit-yellow focus:outline-none p-3"
                       />
                       <button
                         type="button"
                         disabled={editSaving}
                         onClick={() => handleSaveEdit(q.roundNumber)}
-                        className="p-3 bg-psych-yellow hover:bg-yellow-400 text-psych-black font-extrabold rounded-xl"
+                        className="p-3 bg-outwit-yellow hover:bg-yellow-400 text-outwit-black font-extrabold rounded-xl"
                         title="Save"
                       >
                         <Check className="w-4 h-4" />
@@ -233,7 +233,7 @@ export const QuestionManager: React.FC<QuestionManagerProps> = ({
                         <X className="w-4 h-4" />
                       </button>
                     </div>
-                    {editError && <p className="text-xs text-psych-red">{editError}</p>}
+                    {editError && <p className="text-xs text-outwit-red">{editError}</p>}
                   </div>
                 ) : (
                   <p className="text-sm text-neutral-200">{q.text}</p>
@@ -254,26 +254,26 @@ export const QuestionManager: React.FC<QuestionManagerProps> = ({
             value={newQuestionText}
             onChange={(e) => setNewQuestionText(e.target.value)}
             placeholder={`Type question ${getQuestionCount(room) + 1}...`}
-            className="flex-1 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none p-3 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-1 bg-outwit-black border border-neutral-700 rounded-xl text-white text-sm focus:border-outwit-yellow focus:outline-none p-3 disabled:opacity-40 disabled:cursor-not-allowed"
           />
           <button
             type="submit"
             disabled={addBlockReason !== null || addSaving}
-            className="px-4 py-3 bg-psych-yellow hover:bg-yellow-400 text-psych-black font-extrabold rounded-xl flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed text-sm uppercase"
+            className="px-4 py-3 bg-outwit-yellow hover:bg-yellow-400 text-outwit-black font-extrabold rounded-xl flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed text-sm uppercase"
           >
             <Plus className="w-4 h-4" />
             <span>Add</span>
           </button>
         </div>
-        {addBlockReason && <p className="text-xs text-psych-yellow">{addBlockReason}</p>}
-        {addError && <p className="text-xs text-psych-red">{addError}</p>}
+        {addBlockReason && <p className="text-xs text-outwit-yellow">{addBlockReason}</p>}
+        {addError && <p className="text-xs text-outwit-red">{addError}</p>}
         {onOpenAiHelper && (
           <div className="pt-1 flex justify-end">
             <button
               type="button"
               disabled={addBlockReason !== null}
               onClick={onOpenAiHelper}
-              className="px-3 py-2 bg-neutral-800 hover:bg-neutral-700 text-psych-yellow border border-psych-yellow/40 font-bold rounded-xl flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed text-xs uppercase"
+              className="px-3 py-2 bg-neutral-800 hover:bg-neutral-700 text-outwit-yellow border border-outwit-yellow/40 font-bold rounded-xl flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed text-xs uppercase"
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>Get questions from AI</span>

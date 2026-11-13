@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { APP_INFO } from '../src/constants/appInfo';
 
 describe('APP_INFO branding configuration', () => {
-  it('sets APP_INFO.NAME to PSYCH', () => {
-    expect(APP_INFO.NAME).toBe('PSYCH');
+  it('sets APP_INFO.NAME to OutWit', () => {
+    expect(APP_INFO.NAME).toBe('OutWit');
   });
 
   it('ensures no APP_INFO value is empty', () => {

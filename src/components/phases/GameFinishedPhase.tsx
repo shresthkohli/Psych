@@ -5,6 +5,7 @@ import { Room, Player, LeaderboardEntry } from '../../types/game';
 import { computeLeaderboard } from '../../lib/gameLogic';
 import { exportLeaderboardToCSV } from '../../lib/csvExport';
 import { soundManager } from '../../lib/audio';
+import { APP_INFO } from '../../constants/appInfo';
 
 interface GameFinishedPhaseProps {
   room: Room;
@@ -58,11 +59,11 @@ export const GameFinishedPhase: React.FC<GameFinishedPhaseProps> = ({
     <div className="w-full max-w-2xl mx-auto space-y-8 animate-fade-in py-6">
       {/* Title */}
       <div className="text-center space-y-2">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-psych-yellow/15 border border-psych-yellow/40 text-psych-yellow text-xs font-mono font-bold tracking-wide uppercase">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-outwit-yellow/15 border border-outwit-yellow/40 text-outwit-yellow text-xs font-mono font-bold tracking-wide uppercase">
           TOURNAMENT CONCLUDED
         </span>
         <h1 className="text-4xl md:text-5xl font-display font-black text-white tracking-tight uppercase">
-          CHAMPIONS OF PSYCH
+          CHAMPIONS OF {APP_INFO.NAME.toUpperCase()}
         </h1>
         <p className="text-sm text-neutral-400">
           Final Standings{room.eventLabel ? ` — ${room.eventLabel}` : ''}
@@ -80,7 +81,7 @@ export const GameFinishedPhase: React.FC<GameFinishedPhaseProps> = ({
               </div>
               <div className="h-28 bg-neutral-800 border-2 border-neutral-600 rounded-t-2xl flex flex-col items-center justify-center p-2 shadow-lg">
                 <span className="text-2xl font-black text-neutral-300">2</span>
-                <span className="font-mono text-xs text-psych-yellow font-bold mt-1">
+                <span className="font-mono text-xs text-outwit-yellow font-bold mt-1">
                   {second.totalScore} pts
                 </span>
               </div>
@@ -89,18 +90,18 @@ export const GameFinishedPhase: React.FC<GameFinishedPhaseProps> = ({
 
           {/* 1st Place Champion */}
           <div className="flex-1 max-w-[160px] text-center space-y-2 relative -top-4">
-            <div className="w-10 h-10 mx-auto rounded-full bg-psych-yellow flex items-center justify-center text-psych-black shadow-brutal animate-bounce">
+            <div className="w-10 h-10 mx-auto rounded-full bg-outwit-yellow flex items-center justify-center text-outwit-black shadow-brutal animate-bounce">
               <Crown className="w-6 h-6" />
             </div>
             <div className="text-sm font-extrabold text-white truncate px-1">
               {first.displayName}
             </div>
-            <div className="h-36 bg-neutral-900 border-4 border-psych-yellow rounded-t-2xl flex flex-col items-center justify-center p-2 shadow-brutal-lg">
-              <span className="text-4xl font-black text-psych-yellow">1</span>
+            <div className="h-36 bg-neutral-900 border-4 border-outwit-yellow rounded-t-2xl flex flex-col items-center justify-center p-2 shadow-brutal-lg">
+              <span className="text-4xl font-black text-outwit-yellow">1</span>
               <span className="font-mono text-sm text-white font-extrabold mt-1">
                 {first.totalScore} pts
               </span>
-              <span className="text-[10px] uppercase font-bold text-psych-red tracking-wider">
+              <span className="text-[10px] uppercase font-bold text-outwit-red tracking-wider">
                 CHAMPION
               </span>
             </div>
@@ -124,7 +125,7 @@ export const GameFinishedPhase: React.FC<GameFinishedPhaseProps> = ({
       )}
 
       {/* Complete Standings Table */}
-      <div className="bg-psych-cardBg border-2 border-neutral-800 rounded-2xl p-5 shadow-brutal space-y-3">
+      <div className="bg-outwit-cardBg border-2 border-neutral-800 rounded-2xl p-5 shadow-brutal space-y-3">
         <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-400 pb-2 border-b border-neutral-800">
           Full Tournament Leaderboard ({leaderboard.length} Players)
         </h2>
@@ -135,7 +136,7 @@ export const GameFinishedPhase: React.FC<GameFinishedPhaseProps> = ({
               key={entry.playerId}
               className={`flex items-center justify-between p-3 rounded-xl border ${
                 entry.isCurrentUser
-                  ? 'bg-psych-yellow/15 border-psych-yellow text-white'
+                  ? 'bg-outwit-yellow/15 border-outwit-yellow text-white'
                   : 'bg-neutral-900/60 border-neutral-800 text-neutral-300'
               }`}
             >
@@ -147,12 +148,12 @@ export const GameFinishedPhase: React.FC<GameFinishedPhaseProps> = ({
                   {entry.displayName}
                 </span>
                 {entry.isCurrentUser && (
-                  <span className="text-[10px] bg-psych-yellow text-black px-1.5 py-0.2 rounded font-black">
+                  <span className="text-[10px] bg-outwit-yellow text-black px-1.5 py-0.2 rounded font-black">
                     YOU
                   </span>
                 )}
               </div>
-              <div className="font-mono font-black text-base text-psych-yellow">
+              <div className="font-mono font-black text-base text-outwit-yellow">
                 {entry.totalScore.toLocaleString()} PTS
               </div>
             </div>
@@ -164,7 +165,7 @@ export const GameFinishedPhase: React.FC<GameFinishedPhaseProps> = ({
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
         <button
           onClick={handleExportCSV}
-          className="w-full sm:w-auto px-6 py-3 bg-neutral-900 hover:bg-neutral-800 border-2 border-psych-yellow text-psych-yellow font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
+          className="w-full sm:w-auto px-6 py-3 bg-neutral-900 hover:bg-neutral-800 border-2 border-outwit-yellow text-outwit-yellow font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
         >
           <Download className="w-4 h-4" />
           <span>EXPORT FINAL CSV</span>
@@ -172,7 +173,7 @@ export const GameFinishedPhase: React.FC<GameFinishedPhaseProps> = ({
 
         <a
           href="/"
-          className="w-full sm:w-auto px-6 py-3 bg-psych-yellow hover:bg-yellow-400 text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
+          className="w-full sm:w-auto px-6 py-3 bg-outwit-yellow hover:bg-yellow-400 text-outwit-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
         >
           <RotateCcw className="w-4 h-4" />
           <span>START NEW GAME</span>

@@ -1,8 +1,11 @@
 export const APP_INFO = {
-  NAME: 'PSYCH',
-  TAGLINE: 'Think fast. Write wild. Read minds.',
+  NAME: 'OutWit',
+  TAGLINE: 'Think fast. Write wild. Outwit everyone.',
   BADGE: 'Real-time Party Game',
-  FOOTER: 'PSYCH • Live Multiplayer Party Game',
-  DEFAULT_ROOM_NAME: 'PSYCH Party',
+  FOOTER: 'OutWit • Live Multiplayer Party Game',
+  DEFAULT_ROOM_NAME: 'OutWit Party',
+  LOGO_GLYPH: 'O',
+  STORAGE_PREFIX: 'outwit',
+  AI_QUESTIONS_FILE_NAME: 'outwit_questions.csv',
+  LEADERBOARD_FILE_PREFIX: 'OutWit',
 } as const;
-

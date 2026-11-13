@@ -39,18 +39,18 @@ export const MaxPlayersControl: React.FC<{
           max={GAME_LIMITS.MAX_PLAYERS_CAP}
           value={input}
           onChange={(e) => setInput(Number(e.target.value))}
-          className="w-24 p-2 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none"
+          className="w-24 p-2 bg-outwit-black border border-neutral-700 rounded-xl text-white text-sm focus:border-outwit-yellow focus:outline-none"
         />
         <button
           type="button"
           disabled={saving}
           onClick={handleSave}
-          className="px-3 py-2 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-psych-black font-extrabold text-xs rounded-xl uppercase"
+          className="px-3 py-2 bg-outwit-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-outwit-black font-extrabold text-xs rounded-xl uppercase"
         >
           {saving ? 'Saving...' : 'Save'}
         </button>
       </div>
-      {error && <p className="text-xs text-psych-red">{error}</p>}
+      {error && <p className="text-xs text-outwit-red">{error}</p>}
     </div>
   );
 };

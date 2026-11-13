@@ -12,10 +12,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
   highlightCurrentUser = true,
 }) => {
   return (
-    <div className="w-full bg-psych-cardBg border-2 border-psych-yellow/40 rounded-2xl p-5 shadow-brutal space-y-4">
+    <div className="w-full bg-outwit-cardBg border-2 border-outwit-yellow/40 rounded-2xl p-5 shadow-brutal space-y-4">
       <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
         <div className="flex items-center gap-2">
-          <Trophy className="w-5 h-5 text-psych-yellow" />
+          <Trophy className="w-5 h-5 text-outwit-yellow" />
           <h2 className="text-base font-display font-extrabold text-white uppercase tracking-wider">
             Live Standings
           </h2>
@@ -36,9 +36,9 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
               key={entry.playerId}
               className={`flex items-center justify-between p-3.5 rounded-xl border-2 transition-all ${
                 entry.isCurrentUser && highlightCurrentUser
-                  ? 'bg-psych-yellow/15 border-psych-yellow shadow-brutal ring-1 ring-psych-yellow'
+                  ? 'bg-outwit-yellow/15 border-outwit-yellow shadow-brutal ring-1 ring-outwit-yellow'
                   : isTop1
-                  ? 'bg-neutral-900 border-psych-yellow/60'
+                  ? 'bg-neutral-900 border-outwit-yellow/60'
                   : 'bg-neutral-900/60 border-neutral-800'
               }`}
             >
@@ -47,7 +47,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                 <div
                   className={`w-8 h-8 rounded-lg font-black text-sm flex items-center justify-center flex-shrink-0 ${
                     isTop1
-                      ? 'bg-psych-yellow text-psych-black shadow-brutal'
+                      ? 'bg-outwit-yellow text-outwit-black shadow-brutal'
                       : isTop2
                       ? 'bg-neutral-200 text-neutral-900'
                       : isTop3
@@ -64,7 +64,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                       {entry.displayName}
                     </span>
                     {entry.isCurrentUser && (
-                      <span className="text-[10px] px-1.5 py-0.2 bg-psych-yellow text-psych-black font-black rounded uppercase">
+                      <span className="text-[10px] px-1.5 py-0.2 bg-outwit-yellow text-outwit-black font-black rounded uppercase">
                         YOU
                       </span>
                     )}
@@ -80,7 +80,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
               {/* Total Score with Round Score explicitly beside it */}
               <div className="text-right flex-shrink-0 ml-3">
                 <div className="flex items-baseline justify-end gap-1.5">
-                  <span className="font-mono font-black text-lg md:text-xl text-psych-yellow">
+                  <span className="font-mono font-black text-lg md:text-xl text-outwit-yellow">
                     {entry.totalScore.toLocaleString()}
                   </span>
                   {entry.roundScore !== undefined && (

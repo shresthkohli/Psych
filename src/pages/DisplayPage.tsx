@@ -70,16 +70,16 @@ export const DisplayPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-psych-black flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-psych-yellow border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-outwit-black flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-outwit-yellow border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!room) {
     return (
-      <div className="min-h-screen bg-psych-black text-white p-12 text-center">
-        <h1 className="text-3xl font-display font-black text-psych-yellow">Room Not Found</h1>
+      <div className="min-h-screen bg-outwit-black text-white p-12 text-center">
+        <h1 className="text-3xl font-display font-black text-outwit-yellow">Room Not Found</h1>
         <p className="text-neutral-400 mt-2">Check the room code in the URL.</p>
       </div>
     );

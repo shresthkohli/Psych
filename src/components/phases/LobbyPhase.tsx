@@ -33,7 +33,7 @@ export const LobbyPhase: React.FC<LobbyPhaseProps> = ({
       {/* Event Banner */}
       <div className="text-center space-y-1">
         {room.eventLabel && (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-psych-yellow/10 border border-psych-yellow/30 text-psych-yellow text-xs font-bold tracking-wide uppercase">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-outwit-yellow/10 border border-outwit-yellow/30 text-outwit-yellow text-xs font-bold tracking-wide uppercase">
             <Sparkles className="w-3.5 h-3.5" />
             {room.eventLabel} Present
           </span>
@@ -47,12 +47,12 @@ export const LobbyPhase: React.FC<LobbyPhaseProps> = ({
       </div>
 
       {/* Room Code & QR Card */}
-      <div className="bg-psych-cardBg border-2 border-psych-yellow rounded-2xl p-6 shadow-brutal text-center relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-28 h-28 bg-psych-yellow/5 rounded-bl-full pointer-events-none" />
+      <div className="bg-outwit-cardBg border-2 border-outwit-yellow rounded-2xl p-6 shadow-brutal text-center relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-28 h-28 bg-outwit-yellow/5 rounded-bl-full pointer-events-none" />
 
         <div className="flex flex-col md:flex-row items-center justify-center gap-6">
           {/* QR Code */}
-          <div className="p-3 bg-white rounded-xl shadow-lg border-2 border-psych-black flex-shrink-0">
+          <div className="p-3 bg-white rounded-xl shadow-lg border-2 border-outwit-black flex-shrink-0">
             <QRCodeSVG value={shareUrl} size={140} level="M" />
           </div>
 
@@ -63,7 +63,7 @@ export const LobbyPhase: React.FC<LobbyPhaseProps> = ({
                 Join with Room Code
               </span>
               <div className="mt-1 flex items-center justify-center md:justify-start gap-2">
-                <span className="font-mono font-black text-4xl text-psych-yellow tracking-wider select-all">
+                <span className="font-mono font-black text-4xl text-outwit-yellow tracking-wider select-all">
                   {room.roomCode}
                 </span>
                 <button
@@ -84,10 +84,10 @@ export const LobbyPhase: React.FC<LobbyPhaseProps> = ({
       </div>
 
       {/* Connected Players List */}
-      <div className="bg-psych-cardBg border border-psych-borderDark rounded-2xl p-5 space-y-4">
+      <div className="bg-outwit-cardBg border border-outwit-borderDark rounded-2xl p-5 space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
           <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-psych-yellow" />
+            <Users className="w-4 h-4 text-outwit-yellow" />
             <h2 className="text-sm font-bold uppercase tracking-wider text-white">
               Joined Participants ({players.length})
             </h2>
@@ -110,13 +110,13 @@ export const LobbyPhase: React.FC<LobbyPhaseProps> = ({
                   key={player.id}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium transition-all ${
                     isMe
-                      ? 'bg-psych-yellow/15 border-psych-yellow text-psych-yellow font-bold shadow-sm'
+                      ? 'bg-outwit-yellow/15 border-outwit-yellow text-outwit-yellow font-bold shadow-sm'
                       : 'bg-neutral-900 border-neutral-800 text-neutral-300'
                   }`}
                 >
                   <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                   <span>{player.displayName}</span>
-                  {isMe && <span className="text-[10px] bg-psych-yellow text-black px-1.5 py-0.2 rounded font-black">YOU</span>}
+                  {isMe && <span className="text-[10px] bg-outwit-yellow text-black px-1.5 py-0.2 rounded font-black">YOU</span>}
                 </div>
               );
             })}
@@ -126,15 +126,15 @@ export const LobbyPhase: React.FC<LobbyPhaseProps> = ({
 
       {/* Host / Waiting State Action */}
       {isHost ? (
-        <div className="bg-neutral-900 border-2 border-psych-yellow/40 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="bg-neutral-900 border-2 border-outwit-yellow/40 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-xs text-neutral-300">
-            <Shield className="w-4 h-4 text-psych-yellow" />
+            <Shield className="w-4 h-4 text-outwit-yellow" />
             <span>You are controlling this room as <strong>Host</strong>.</span>
           </div>
           <button
             onClick={onStartGame}
             disabled={players.length === 0}
-            className="w-full sm:w-auto px-6 py-3 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-50 text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
+            className="w-full sm:w-auto px-6 py-3 bg-outwit-yellow hover:bg-yellow-400 disabled:opacity-50 text-outwit-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
           >
             <span>START ROUND 1</span>
             <ArrowRight className="w-4 h-4" />
@@ -143,7 +143,7 @@ export const LobbyPhase: React.FC<LobbyPhaseProps> = ({
       ) : (
         <div className="text-center py-4 space-y-2">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-400 text-xs animate-pulse">
-            <span className="w-2 h-2 rounded-full bg-psych-yellow animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-outwit-yellow animate-ping" />
             Waiting for the host to start the round...
           </div>
         </div>

@@ -14,6 +14,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { getFunctions, Functions, connectFunctionsEmulator } from 'firebase/functions';
+import { APP_INFO } from '../constants/appInfo';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
@@ -56,13 +57,13 @@ try {
       connectAuthEmulator(auth, `http://${host}:9099`, { disableWarnings: true });
       connectFirestoreEmulator(db, host, 8080);
       connectFunctionsEmulator(functions, host, 5001);
-      console.log('[PSYCH Firebase] Connected to Local Firebase Emulators on host:', host);
+      console.log(`[${APP_INFO.NAME} Firebase] Connected to Local Firebase Emulators on host:`, host);
     } catch {
       // Ignored if already connected
     }
   }
 } catch (err) {
-  console.warn('[PSYCH Firebase] Firebase initialization status:', err);
+  console.warn(`[${APP_INFO.NAME} Firebase] Firebase initialization status:`, err);
 }
 
 export { app, auth, db, functions, signInAnonymously, onAuthStateChanged, serverTimestamp };

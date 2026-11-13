@@ -39,8 +39,8 @@ const OptionGroup: React.FC<{
             onClick={() => onSelect(opt.id)}
             className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
               active
-                ? 'bg-psych-yellow text-psych-black border-psych-yellow'
-                : 'bg-psych-black text-neutral-300 border-neutral-700 hover:border-neutral-500'
+                ? 'bg-outwit-yellow text-outwit-black border-outwit-yellow'
+                : 'bg-outwit-black text-neutral-300 border-neutral-700 hover:border-neutral-500'
             }`}
           >
             {opt.label}
@@ -124,7 +124,7 @@ export const AiPromptStep: React.FC<AiPromptStepProps> = ({
             const parsed = Number(e.target.value);
             if (!Number.isNaN(parsed)) setCount(Math.min(maxCount, Math.max(1, Math.floor(parsed))));
           }}
-          className="w-20 bg-psych-black border border-neutral-700 rounded-lg px-2.5 py-1.5 text-sm text-white focus:border-psych-yellow focus:outline-none"
+          className="w-20 bg-outwit-black border border-neutral-700 rounded-lg px-2.5 py-1.5 text-sm text-white focus:border-outwit-yellow focus:outline-none"
         />
         <span className="text-xs text-neutral-400">({remainingSlots} slots left)</span>
       </div>
@@ -140,7 +140,7 @@ export const AiPromptStep: React.FC<AiPromptStepProps> = ({
           value={context}
           onChange={(e) => setContext(e.target.value)}
           placeholder="Inside jokes, favourite hangouts, running gags, recent events..."
-          className="w-full bg-psych-black border border-neutral-700 rounded-xl p-2.5 text-sm text-white focus:border-psych-yellow focus:outline-none"
+          className="w-full bg-outwit-black border border-neutral-700 rounded-xl p-2.5 text-sm text-white focus:border-outwit-yellow focus:outline-none"
         />
         <p className="text-[11px] text-neutral-400">
           The more specific you are (places, events, running jokes, group nicknames), the less generic the questions
@@ -158,7 +158,7 @@ export const AiPromptStep: React.FC<AiPromptStepProps> = ({
             maxLength={GAME_LIMITS.AI_TOPICS_MAX_LENGTH}
             value={includeTopics}
             onChange={(e) => setIncludeTopics(e.target.value)}
-            className="w-full bg-psych-black border border-neutral-700 rounded-lg px-2.5 py-1.5 text-sm text-white focus:border-psych-yellow focus:outline-none"
+            className="w-full bg-outwit-black border border-neutral-700 rounded-lg px-2.5 py-1.5 text-sm text-white focus:border-outwit-yellow focus:outline-none"
           />
         </div>
         <div className="space-y-1">
@@ -171,7 +171,7 @@ export const AiPromptStep: React.FC<AiPromptStepProps> = ({
             maxLength={GAME_LIMITS.AI_TOPICS_MAX_LENGTH}
             value={avoidTopics}
             onChange={(e) => setAvoidTopics(e.target.value)}
-            className="w-full bg-psych-black border border-neutral-700 rounded-lg px-2.5 py-1.5 text-sm text-white focus:border-psych-yellow focus:outline-none"
+            className="w-full bg-outwit-black border border-neutral-700 rounded-lg px-2.5 py-1.5 text-sm text-white focus:border-outwit-yellow focus:outline-none"
           />
         </div>
       </div>
@@ -181,7 +181,7 @@ export const AiPromptStep: React.FC<AiPromptStepProps> = ({
           type="checkbox"
           checked={includeNicknames}
           onChange={(e) => setIncludeNicknames(e.target.checked)}
-          className="mt-0.5 accent-psych-yellow"
+          className="mt-0.5 accent-outwit-yellow"
         />
         <span>
           <strong className="text-white">Include player nicknames</strong> — Nicknames are pasted into the AI chat you
@@ -191,11 +191,11 @@ export const AiPromptStep: React.FC<AiPromptStepProps> = ({
 
       <div className="space-y-1.5 pt-2 border-t border-neutral-800">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-psych-yellow">Generated Prompt</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-outwit-yellow">Generated Prompt</span>
           <button
             type="button"
             onClick={handleCopy}
-            className="px-3 py-1.5 rounded-lg bg-psych-yellow hover:bg-yellow-400 text-psych-black font-extrabold text-xs uppercase flex items-center gap-1.5"
+            className="px-3 py-1.5 rounded-lg bg-outwit-yellow hover:bg-yellow-400 text-outwit-black font-extrabold text-xs uppercase flex items-center gap-1.5"
           >
             {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copied ? 'Copied!' : 'Copy prompt'}</span>
@@ -206,7 +206,7 @@ export const AiPromptStep: React.FC<AiPromptStepProps> = ({
           readOnly
           rows={5}
           value={promptText}
-          className="w-full bg-psych-black border border-neutral-700 rounded-xl p-2.5 text-xs font-mono text-neutral-200 focus:outline-none"
+          className="w-full bg-outwit-black border border-neutral-700 rounded-xl p-2.5 text-xs font-mono text-neutral-200 focus:outline-none"
         />
         <p className="text-[11px] text-neutral-400">
           Paste this prompt into ChatGPT, Gemini, Claude or any AI chat. It will give you a CSV file. Come back here
@@ -218,7 +218,7 @@ export const AiPromptStep: React.FC<AiPromptStepProps> = ({
         <button
           type="button"
           onClick={onNext}
-          className="px-4 py-2.5 bg-psych-yellow hover:bg-yellow-400 text-psych-black font-extrabold rounded-xl text-sm uppercase flex items-center gap-1.5"
+          className="px-4 py-2.5 bg-outwit-yellow hover:bg-yellow-400 text-outwit-black font-extrabold rounded-xl text-sm uppercase flex items-center gap-1.5"
         >
           <span>Next: upload the CSV</span>
           <ArrowRight className="w-4 h-4" />

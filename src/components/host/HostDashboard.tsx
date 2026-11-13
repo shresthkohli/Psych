@@ -23,6 +23,7 @@ import { computeLeaderboard } from '../../lib/gameLogic';
 import { useCountdown } from '../../hooks/useCountdown';
 import { getStartBlockReason, getNextRoundBlockReason } from '../../lib/questionRules';
 import { MaxPlayersControl } from './MaxPlayersControl';
+import { APP_INFO } from '../../constants/appInfo';
 
 interface HostDashboardProps {
   room: Room;
@@ -103,21 +104,21 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6 pb-12">
       {/* Top Host Bar */}
-      <div className="bg-psych-cardBg border-2 border-psych-yellow rounded-2xl p-5 shadow-brutal flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-outwit-cardBg border-2 border-outwit-yellow rounded-2xl p-5 shadow-brutal flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-psych-yellow/20 text-psych-yellow">
+            <span className="p-1.5 rounded-lg bg-outwit-yellow/20 text-outwit-yellow">
               <Shield className="w-4 h-4" />
             </span>
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-psych-yellow">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-outwit-yellow">
               HOST CONTROL CONSOLE
             </span>
           </div>
           <h1 className="text-2xl font-display font-black text-white mt-1">
-            Room {room.roomCode} — {room.roomName || 'PSYCH Live'}
+            Room {room.roomCode} — {room.roomName || APP_INFO.NAME}
           </h1>
           <p className="text-xs text-neutral-400">
-            Phase: <strong className="text-psych-yellow uppercase">{room.status}</strong> • Round {room.currentRoundNumber} of {room.settings.totalRounds}
+            Phase: <strong className="text-outwit-yellow uppercase">{room.status}</strong> • Round {room.currentRoundNumber} of {room.settings.totalRounds}
           </p>
         </div>
 
@@ -129,7 +130,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
             rel="noreferrer"
             className="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-xs font-bold text-white rounded-xl flex items-center gap-1.5 transition-colors"
           >
-            <Tv className="w-3.5 h-3.5 text-psych-yellow" />
+            <Tv className="w-3.5 h-3.5 text-outwit-yellow" />
             <span>Open Projector</span>
           </a>
 
@@ -137,21 +138,21 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
             onClick={handleExportCSV}
             className="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-xs font-bold text-neutral-300 hover:text-white rounded-xl flex items-center gap-1.5 transition-colors"
           >
-            <Download className="w-3.5 h-3.5 text-psych-yellow" />
+            <Download className="w-3.5 h-3.5 text-outwit-yellow" />
             <span>Export CSV</span>
           </button>
         </div>
       </div>
 
       {/* Primary Phase Controls */}
-      <div className="bg-neutral-900 border border-psych-borderDark rounded-2xl p-6 space-y-5">
+      <div className="bg-neutral-900 border border-outwit-borderDark rounded-2xl p-6 space-y-5">
         <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
           <div className="flex items-center gap-3">
             <h2 className="text-sm font-bold uppercase tracking-wider text-white">
               Primary Phase Progression
             </h2>
             {['ANSWERING', 'VOTING'].includes(room.status) && (
-              <span className="px-2.5 py-1 bg-psych-yellow/15 text-psych-yellow border border-psych-yellow/40 rounded-lg font-mono text-xs font-bold flex items-center gap-1.5">
+              <span className="px-2.5 py-1 bg-outwit-yellow/15 text-outwit-yellow border border-outwit-yellow/40 rounded-lg font-mono text-xs font-bold flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 animate-pulse" />
                 <span>{countdown.formattedTime}</span>
               </span>
@@ -169,19 +170,19 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
               <button
                 onClick={onStartRound}
                 disabled={startBlockReason !== null}
-                className="px-6 py-3.5 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center gap-2 uppercase tracking-wider"
+                className="px-6 py-3.5 bg-outwit-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-outwit-black font-extrabold text-sm rounded-xl btn-brutal flex items-center gap-2 uppercase tracking-wider"
               >
-                <Play className="w-4 h-4 fill-psych-black" />
+                <Play className="w-4 h-4 fill-outwit-black" />
                 <span>START ROUND {room.currentRoundNumber}</span>
               </button>
-              {startBlockReason && <p className="w-full text-xs text-psych-yellow">{startBlockReason}</p>}
+              {startBlockReason && <p className="w-full text-xs text-outwit-yellow">{startBlockReason}</p>}
             </>
           )}
 
           {room.status === 'ANSWERING' && (
             <button
               onClick={onEndAnswering}
-              className="px-6 py-3.5 bg-psych-yellow hover:bg-yellow-400 text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center gap-2 uppercase tracking-wider"
+              className="px-6 py-3.5 bg-outwit-yellow hover:bg-yellow-400 text-outwit-black font-extrabold text-sm rounded-xl btn-brutal flex items-center gap-2 uppercase tracking-wider"
             >
               <CheckCircle className="w-4 h-4" />
               <span>CLOSE SUBMISSIONS & START VOTING</span>
@@ -191,7 +192,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
           {room.status === 'VOTING' && (
             <button
               onClick={onEndVoting}
-              className="px-6 py-3.5 bg-psych-yellow hover:bg-yellow-400 text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center gap-2 uppercase tracking-wider"
+              className="px-6 py-3.5 bg-outwit-yellow hover:bg-yellow-400 text-outwit-black font-extrabold text-sm rounded-xl btn-brutal flex items-center gap-2 uppercase tracking-wider"
             >
               <CheckCircle className="w-4 h-4" />
               <span>CLOSE VOTING & TALLY SCORES</span>
@@ -205,17 +206,17 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                   <button
                     onClick={onNextRound}
                     disabled={nextRoundBlockReason !== null}
-                    className="px-6 py-3.5 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center gap-2 uppercase tracking-wider"
+                    className="px-6 py-3.5 bg-outwit-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-outwit-black font-extrabold text-sm rounded-xl btn-brutal flex items-center gap-2 uppercase tracking-wider"
                   >
-                    <Play className="w-4 h-4 fill-psych-black" />
+                    <Play className="w-4 h-4 fill-outwit-black" />
                     <span>START ROUND {room.currentRoundNumber + 1}</span>
                   </button>
-                  {nextRoundBlockReason && <p className="w-full text-xs text-psych-yellow">{nextRoundBlockReason}</p>}
+                  {nextRoundBlockReason && <p className="w-full text-xs text-outwit-yellow">{nextRoundBlockReason}</p>}
                 </>
               ) : (
                 <button
                   onClick={onEndGame}
-                  className="px-6 py-3.5 bg-psych-red hover:bg-red-600 text-white font-extrabold text-sm rounded-xl btn-brutal-red flex items-center gap-2 uppercase tracking-wider"
+                  className="px-6 py-3.5 bg-outwit-red hover:bg-red-600 text-white font-extrabold text-sm rounded-xl btn-brutal-red flex items-center gap-2 uppercase tracking-wider"
                 >
                   <CheckCircle className="w-4 h-4" />
                   <span>FINISH TOURNAMENT & REVEAL CHAMPION</span>
@@ -249,28 +250,28 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
         {/* Current Round Stats Overview */}
         {round && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-            <div className="p-3 bg-psych-black rounded-xl border border-neutral-800">
+            <div className="p-3 bg-outwit-black rounded-xl border border-neutral-800">
               <span className="text-[10px] font-bold text-neutral-400 uppercase">Submissions</span>
-              <div className="text-xl font-mono font-black text-psych-yellow">
+              <div className="text-xl font-mono font-black text-outwit-yellow">
                 {round.submissionCount || 0} / {players.length}
               </div>
             </div>
 
-            <div className="p-3 bg-psych-black rounded-xl border border-neutral-800">
+            <div className="p-3 bg-outwit-black rounded-xl border border-neutral-800">
               <span className="text-[10px] font-bold text-neutral-400 uppercase">Votes Cast</span>
               <div className="text-xl font-mono font-black text-white">
                 {round.voteCount || 0} / {players.length}
               </div>
             </div>
 
-            <div className="p-3 bg-psych-black rounded-xl border border-neutral-800">
+            <div className="p-3 bg-outwit-black rounded-xl border border-neutral-800">
               <span className="text-[10px] font-bold text-neutral-400 uppercase">Answer Limit</span>
               <div className="text-xl font-mono font-black text-neutral-300">
                 {room.settings.maxWords} words
               </div>
             </div>
 
-            <div className="p-3 bg-psych-black rounded-xl border border-neutral-800">
+            <div className="p-3 bg-outwit-black rounded-xl border border-neutral-800">
               <span className="text-[10px] font-bold text-neutral-400 uppercase">Voting Time</span>
               <div className="text-xl font-mono font-black text-neutral-300">
                 {room.settings.votingDuration}s
@@ -281,17 +282,17 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
       </div>
 
       {/* Moderation Panel (Private to Host) */}
-      <div className="bg-psych-cardBg border border-psych-borderDark rounded-2xl p-5 space-y-4">
+      <div className="bg-outwit-cardBg border border-outwit-borderDark rounded-2xl p-5 space-y-4">
         <div className="flex items-center justify-between pb-2 border-b border-neutral-800">
           <div className="flex items-center gap-2">
-            <Shield className="w-4 h-4 text-psych-yellow" />
+            <Shield className="w-4 h-4 text-outwit-yellow" />
             <h2 className="text-sm font-bold uppercase tracking-wider text-white">
               Private Content Moderation ({answers.length})
             </h2>
           </div>
           <button
             onClick={() => setShowModeration(!showModeration)}
-            className="text-xs text-psych-yellow hover:underline font-bold"
+            className="text-xs text-outwit-yellow hover:underline font-bold"
           >
             {showModeration ? 'Collapse' : 'Inspect Submissions'}
           </button>
@@ -315,7 +316,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-bold text-psych-yellow">
+                        <span className="text-[11px] font-bold text-outwit-yellow">
                           Author: {author?.displayName || ans.authorPlayerId}
                         </span>
                         {isHidden && (
@@ -345,17 +346,17 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
       </div>
 
       {/* Players & Presence Roster */}
-      <div className="bg-psych-cardBg border border-psych-borderDark rounded-2xl p-5 space-y-4">
+      <div className="bg-outwit-cardBg border border-outwit-borderDark rounded-2xl p-5 space-y-4">
         <div className="flex items-center justify-between pb-2 border-b border-neutral-800">
           <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-psych-yellow" />
+            <Users className="w-4 h-4 text-outwit-yellow" />
             <h2 className="text-sm font-bold uppercase tracking-wider text-white">
               Connected Participants ({players.length}{room.settings.maxPlayers ? ` / ${room.settings.maxPlayers}` : ''})
             </h2>
           </div>
           <button
             onClick={() => setShowPlayers(!showPlayers)}
-            className="text-xs text-psych-yellow hover:underline font-bold"
+            className="text-xs text-outwit-yellow hover:underline font-bold"
           >
             {showPlayers ? 'Collapse' : 'Manage Participants'}
           </button>
@@ -411,7 +412,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
 
       {/* Destructive Host Actions with Confirmation */}
       <div className="bg-neutral-950 border border-red-900/30 rounded-2xl p-5 space-y-3">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-psych-red">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-outwit-red">
           Danger Zone / Round Management
         </h3>
         <div className="flex flex-wrap gap-2.5">
@@ -465,8 +466,8 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
       {/* Confirmation Modal */}
       {confirmModal.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="max-w-md w-full bg-psych-dark border-2 border-psych-red rounded-2xl p-6 shadow-brutal space-y-4">
-            <div className="flex items-center gap-2 text-psych-red font-bold text-lg">
+          <div className="max-w-md w-full bg-outwit-dark border-2 border-outwit-red rounded-2xl p-6 shadow-brutal space-y-4">
+            <div className="flex items-center gap-2 text-outwit-red font-bold text-lg">
               <AlertTriangle className="w-5 h-5" />
               <span>{confirmModal.title}</span>
             </div>
@@ -483,7 +484,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                   confirmModal.action();
                   setConfirmModal({ ...confirmModal, isOpen: false });
                 }}
-                className="px-4 py-2 bg-psych-red hover:bg-red-600 text-white text-xs font-extrabold rounded-xl"
+                className="px-4 py-2 bg-outwit-red hover:bg-red-600 text-white text-xs font-extrabold rounded-xl"
               >
                 CONFIRM ACTION
               </button>

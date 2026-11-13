@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { buildAiQuestionPrompt, AiPromptInput } from '../src/lib/aiPrompt';
 import { GAME_LIMITS } from '../src/constants/gameLimits';
+import { APP_INFO } from '../src/constants/appInfo';
 import {
   MOODS,
   BRUTALITY_LEVELS,
@@ -35,7 +36,8 @@ describe('buildAiQuestionPrompt', () => {
     expect(prompt).toContain(`write ${GAME_LIMITS.DEFAULT_AI_QUESTION_COUNT} questions`);
     expect(prompt).toContain(`Maximum ${GAME_LIMITS.MAX_QUESTION_LENGTH} characters`);
     expect(prompt).toContain('maximum 12 words');
-    expect(prompt).toContain('psych_questions.csv');
+    expect(prompt).toContain(APP_INFO.NAME);
+    expect(prompt).toContain(APP_INFO.AI_QUESTIONS_FILE_NAME);
     expect(prompt).toContain('number,question');
   });
 

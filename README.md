@@ -1,4 +1,4 @@
-# PSYCH — Real-Time Multiplayer Party Game
+# OutWit — Real-Time Multiplayer Party Game
 
 A mobile-first, server-authoritative live multiplayer game designed for house parties and live events and 1 host controlling the game show from a dashboard or projector screen.
 
@@ -50,7 +50,7 @@ Follow these simple steps in the Firebase Console:
 
 ### Step 1: Create a Firebase Project
 1. Go to [Firebase Console](https://console.firebase.google.com/) and click **"Add project"**.
-2. Name it (e.g. `psych-game`). Disable Google Analytics if not needed, then click **Create Project**.
+2. Name it (e.g. `outwit-game`). Disable Google Analytics if not needed, then click **Create Project**.
 
 ### Step 2: Enable Anonymous Authentication
 1. In the left navigation, go to **Build** -> **Authentication** and click **Get Started**.
@@ -64,13 +64,13 @@ Follow these simple steps in the Firebase Console:
 
 ### Step 4: Register Web App & Get Config
 1. In Project Overview, click the **Web icon (</>)** to register an app.
-2. Give it a nickname (e.g., `psych-web`) and click **Register app**.
+2. Give it a nickname (e.g., `outwit-web`) and click **Register app**.
 3. Copy the `firebaseConfig` keys into your `.env` file:
    ```env
    VITE_FIREBASE_API_KEY=AIzaSy...
-   VITE_FIREBASE_AUTH_DOMAIN=psych-game.firebaseapp.com
-   VITE_FIREBASE_PROJECT_ID=psych-game
-   VITE_FIREBASE_STORAGE_BUCKET=psych-game.appspot.com
+   VITE_FIREBASE_AUTH_DOMAIN=outwit-game.firebaseapp.com
+   VITE_FIREBASE_PROJECT_ID=outwit-game
+   VITE_FIREBASE_STORAGE_BUCKET=outwit-game.appspot.com
    VITE_FIREBASE_MESSAGING_SENDER_ID=...
    VITE_FIREBASE_APP_ID=1:...
    VITE_FIREBASE_MEASUREMENT_ID=G-...

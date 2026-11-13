@@ -21,18 +21,18 @@ export const UrgencyTimer: React.FC<UrgencyTimerProps> = ({
         isPaused
           ? 'bg-neutral-900 border-neutral-700'
           : isCritical
-          ? 'bg-psych-red/10 border-psych-red shadow-brutal-red animate-pulse'
+          ? 'bg-outwit-red/10 border-outwit-red shadow-brutal-red animate-pulse'
           : isUrgent
-          ? 'bg-psych-yellow/10 border-psych-yellow shadow-brutal'
-          : 'bg-psych-cardBg border-psych-borderDark'
+          ? 'bg-outwit-yellow/10 border-outwit-yellow shadow-brutal'
+          : 'bg-outwit-cardBg border-outwit-borderDark'
       }`}
     >
       <div className="px-4 py-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
           {isCritical ? (
-            <AlertTriangle className="w-4 h-4 text-psych-red animate-bounce" />
+            <AlertTriangle className="w-4 h-4 text-outwit-red animate-bounce" />
           ) : (
-            <Clock className={`w-4 h-4 ${isUrgent ? 'text-psych-yellow' : 'text-neutral-400'}`} />
+            <Clock className={`w-4 h-4 ${isUrgent ? 'text-outwit-yellow' : 'text-neutral-400'}`} />
           )}
           <span className="text-[11px] font-bold tracking-wider uppercase text-neutral-400">
             {isPaused ? 'TIMER PAUSED' : label}
@@ -43,9 +43,9 @@ export const UrgencyTimer: React.FC<UrgencyTimerProps> = ({
           <span
             className={`font-mono font-black text-2xl md:text-3xl tracking-tight transition-colors ${
               isCritical
-                ? 'text-psych-red'
+                ? 'text-outwit-red'
                 : isUrgent
-                ? 'text-psych-yellow'
+                ? 'text-outwit-yellow'
                 : 'text-white'
             }`}
           >
@@ -59,9 +59,9 @@ export const UrgencyTimer: React.FC<UrgencyTimerProps> = ({
         <div
           className={`h-full transition-all duration-300 ease-linear ${
             isCritical
-              ? 'bg-psych-red'
+              ? 'bg-outwit-red'
               : isUrgent
-              ? 'bg-psych-yellow'
+              ? 'bg-outwit-yellow'
               : 'bg-neutral-400'
           }`}
           style={{ width: `${progressPercent}%` }}

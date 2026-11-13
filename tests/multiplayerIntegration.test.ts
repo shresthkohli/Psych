@@ -10,7 +10,7 @@ import {
 } from '../src/lib/gameLogic';
 import { Player, Room, Round, Answer, Vote, RoundScore } from '../src/types/game';
 
-describe('PSYCH 15-Player Multiplayer Simulation & Integration Suite', () => {
+describe('OutWit 15-Player Multiplayer Simulation & Integration Suite', () => {
   // Test scenario with 15 simultaneous participants
   const NUM_PLAYERS = 15;
   const players: Player[] = Array.from({ length: NUM_PLAYERS }, (_, i) => ({

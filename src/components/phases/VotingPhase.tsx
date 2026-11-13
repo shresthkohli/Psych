@@ -105,7 +105,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
   return (
     <div className="w-full max-w-xl mx-auto space-y-5 animate-fade-in">
       {/* Sticky Top Timer */}
-      <div className="sticky top-14 z-30 pt-1 pb-2 bg-psych-black/90 backdrop-blur">
+      <div className="sticky top-14 z-30 pt-1 pb-2 bg-outwit-black/90 backdrop-blur">
         <UrgencyTimer
           countdown={countdown}
           label={`ROUND ${round.roundNumber} • ${userVote && !isChangingVote ? 'WAITING FOR VOTES' : 'VOTE FOR THE BEST ANSWER'}`}
@@ -114,13 +114,13 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
       </div>
 
       {/* Round Question Reminder */}
-      <div className="bg-psych-cardBg border border-neutral-800 rounded-xl p-4 text-center">
+      <div className="bg-outwit-cardBg border border-neutral-800 rounded-xl p-4 text-center">
         <div className="flex items-center justify-between pb-1.5 border-b border-neutral-800/80 mb-2">
-          <span className="text-[11px] font-mono font-bold text-psych-yellow uppercase">
+          <span className="text-[11px] font-mono font-bold text-outwit-yellow uppercase">
             Question {round.roundNumber}
           </span>
           <div className="flex items-center gap-1.5 text-xs text-neutral-400">
-            <Users className="w-3.5 h-3.5 text-psych-yellow" />
+            <Users className="w-3.5 h-3.5 text-outwit-yellow" />
             <span>{votedCount} / {players.length} voted</span>
           </div>
         </div>
@@ -133,7 +133,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
       {hasUserVoted && !isChangingVote ? (
         <div className="space-y-4 animate-fade-in">
           {/* Vote Recorded Confirmation Bar */}
-          <div className="bg-psych-cardBg border-2 border-green-500/60 rounded-2xl p-4 shadow-brutal flex items-center justify-between">
+          <div className="bg-outwit-cardBg border-2 border-green-500/60 rounded-2xl p-4 shadow-brutal flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center font-bold">
                 <CheckCircle2 className="w-5 h-5" />
@@ -148,7 +148,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
             {room.settings.allowVoteChanges && !isClosed && (
               <button
                 onClick={() => setIsChangingVote(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-psych-yellow rounded-xl text-xs font-bold transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-outwit-yellow rounded-xl text-xs font-bold transition-colors"
               >
                 <Edit3 className="w-3.5 h-3.5" />
                 <span>Change</span>
@@ -157,7 +157,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
           </div>
 
           {/* Voting Tracker & Leaderboard */}
-          <div className="bg-psych-cardBg border-2 border-psych-yellow/40 rounded-2xl p-5 shadow-brutal space-y-4">
+          <div className="bg-outwit-cardBg border-2 border-outwit-yellow/40 rounded-2xl p-5 shadow-brutal space-y-4">
             <div className="space-y-2 pb-3 border-b border-neutral-800">
               <div className="flex items-center justify-between">
                 <div>
@@ -168,7 +168,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
                     Scores and winner revealed as soon as all vote!
                   </span>
                 </div>
-                <div className="px-2.5 py-1 rounded-lg bg-psych-yellow/15 text-psych-yellow text-xs font-mono font-bold">
+                <div className="px-2.5 py-1 rounded-lg bg-outwit-yellow/15 text-outwit-yellow text-xs font-mono font-bold">
                   {votedCount}/{players.length} Voted
                 </div>
               </div>
@@ -176,7 +176,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
               {/* Progress Bar */}
               <div className="w-full h-2 bg-neutral-800 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-psych-yellow transition-all duration-300"
+                  className="h-full bg-outwit-yellow transition-all duration-300"
                   style={{ width: `${Math.min(100, (votedCount / Math.max(1, players.length)) * 100)}%` }}
                 />
               </div>
@@ -208,7 +208,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
                     key={entry.playerId}
                     className={`flex items-center justify-between p-3 rounded-xl border transition-all ${
                       entry.isCurrentUser
-                        ? 'bg-psych-yellow/10 border-psych-yellow ring-1 ring-psych-yellow/30'
+                        ? 'bg-outwit-yellow/10 border-outwit-yellow ring-1 ring-outwit-yellow/30'
                         : 'bg-neutral-900/60 border-neutral-800'
                     }`}
                   >
@@ -220,14 +220,14 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
                         {entry.displayName}
                       </span>
                       {entry.isCurrentUser && (
-                        <span className="text-[9px] bg-psych-yellow text-black px-1.5 py-0.2 rounded font-black">
+                        <span className="text-[9px] bg-outwit-yellow text-black px-1.5 py-0.2 rounded font-black">
                           YOU
                         </span>
                       )}
                     </div>
 
                     <div className="flex items-center gap-3 flex-shrink-0">
-                      <span className="font-mono text-xs font-bold text-psych-yellow">
+                      <span className="font-mono text-xs font-bold text-outwit-yellow">
                         {entry.totalScore} pts
                       </span>
 
@@ -266,10 +266,10 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
                   disabled={isSelf || isClosed}
                   className={`w-full text-left p-4 rounded-2xl border-2 transition-all relative ${
                     isSelected
-                      ? 'bg-neutral-900 border-psych-yellow shadow-brutal ring-2 ring-psych-yellow/20'
+                      ? 'bg-neutral-900 border-outwit-yellow shadow-brutal ring-2 ring-outwit-yellow/20'
                       : isSelf
                       ? 'bg-neutral-950/60 border-neutral-800/80 opacity-60 cursor-not-allowed'
-                      : 'bg-psych-cardBg border-psych-borderDark hover:border-neutral-600'
+                      : 'bg-outwit-cardBg border-outwit-borderDark hover:border-neutral-600'
                   }`}
                 >
                   <div className="flex items-start gap-3">
@@ -277,7 +277,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
                     <div
                       className={`w-7 h-7 rounded-lg font-black text-sm flex items-center justify-center flex-shrink-0 ${
                         isSelected
-                          ? 'bg-psych-yellow text-psych-black'
+                          ? 'bg-outwit-yellow text-outwit-black'
                           : 'bg-neutral-800 text-neutral-300'
                       }`}
                     >
@@ -302,7 +302,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
                       <div
                         className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
                           isSelected
-                            ? 'bg-psych-yellow border-psych-yellow text-psych-black'
+                            ? 'bg-outwit-yellow border-outwit-yellow text-outwit-black'
                             : 'border-neutral-700 bg-neutral-900'
                         }`}
                       >
@@ -316,7 +316,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
           </div>
 
           {errorMessage && (
-            <div className="flex items-center gap-2 p-3 bg-psych-red/10 border border-psych-red/40 rounded-xl text-xs text-psych-red">
+            <div className="flex items-center gap-2 p-3 bg-outwit-red/10 border border-outwit-red/40 rounded-xl text-xs text-outwit-red">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{errorMessage}</span>
             </div>
@@ -325,7 +325,7 @@ export const VotingPhase: React.FC<VotingPhaseProps> = ({
           <button
             onClick={handleConfirmVote}
             disabled={!selectedId || isVoting || isClosed}
-            className="w-full py-4 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
+            className="w-full py-4 bg-outwit-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-outwit-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
           >
             {isVoting ? (
               <span>RECORDING VOTE...</span>

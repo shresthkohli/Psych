@@ -1,5 +1,6 @@
 import { auth, signInAnonymously } from '../lib/firebase';
 import { User } from 'firebase/auth';
+import { APP_INFO } from '../constants/appInfo';
 
 /**
  * Handles anonymous authentication for game participants.
@@ -19,7 +20,7 @@ export async function getOrCreateAnonymousUser(): Promise<User | null> {
     const cred = await signInAnonymously(auth);
     return cred.user;
   } catch (error) {
-    console.warn('[PSYCH Auth] Anonymous sign-in warning:', error);
+    console.warn(`[${APP_INFO.NAME} Auth] Anonymous sign-in warning:`, error);
     // Return null or let caller handle fallback
     return null;
   }
@@ -29,8 +30,8 @@ export async function getOrCreateAnonymousUser(): Promise<User | null> {
  * Manages persistent client session storage to recover state on reload.
  */
 export const sessionStore = {
-  getPlayerKey: (roomCode: string) => `psych_player_${roomCode.toUpperCase()}`,
-  getHostKey: (roomCode: string) => `psych_host_token_${roomCode.toUpperCase()}`,
+  getPlayerKey: (roomCode: string) => `${APP_INFO.STORAGE_PREFIX}_player_${roomCode.toUpperCase()}`,
+  getHostKey: (roomCode: string) => `${APP_INFO.STORAGE_PREFIX}_host_token_${roomCode.toUpperCase()}`,
 
   savePlayerSession: (roomCode: string, session: { playerId: string; displayName: string }) => {
     localStorage.setItem(sessionStore.getPlayerKey(roomCode), JSON.stringify(session));

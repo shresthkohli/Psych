@@ -31,7 +31,7 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || '',
 };
 
-describe('PSYCH Live End-to-End Game Lifecycle on Production Firebase', () => {
+describe('OutWit Live End-to-End Game Lifecycle on Production Firebase', () => {
   it('runs complete live game loop with room creation, joins, answers, votes, and scoring', async () => {
     // 1. Host creates room
     const hostAuth = getAuth();

@@ -262,15 +262,15 @@ export const HostPage: React.FC = () => {
 
   if (isLoading || !authReady) {
     return (
-      <div className="min-h-screen bg-psych-black flex items-center justify-center p-4">
-        <div className="w-10 h-10 border-4 border-psych-yellow border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-outwit-black flex items-center justify-center p-4">
+        <div className="w-10 h-10 border-4 border-outwit-yellow border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!room) {
     return (
-      <div className="min-h-screen bg-psych-black text-white p-6 text-center">
+      <div className="min-h-screen bg-outwit-black text-white p-6 text-center">
         <p>Room not found.</p>
       </div>
     );
@@ -279,11 +279,11 @@ export const HostPage: React.FC = () => {
   // Authorization Screen
   if (!isAuthorized) {
     return (
-      <div className="min-h-screen bg-psych-black text-white flex flex-col justify-between selection:bg-psych-yellow selection:text-psych-black">
+      <div className="min-h-screen bg-outwit-black text-white flex flex-col justify-between selection:bg-outwit-yellow selection:text-outwit-black">
         <Header />
         <main className="flex-1 flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-psych-cardBg border-2 border-psych-yellow rounded-3xl p-8 shadow-brutal space-y-6">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-psych-yellow/15 border border-psych-yellow flex items-center justify-center text-psych-yellow">
+          <div className="max-w-md w-full bg-outwit-cardBg border-2 border-outwit-yellow rounded-3xl p-8 shadow-brutal space-y-6">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-outwit-yellow/15 border border-outwit-yellow flex items-center justify-center text-outwit-yellow">
               <KeyRound className="w-8 h-8" />
             </div>
 
@@ -303,20 +303,20 @@ export const HostPage: React.FC = () => {
                   value={enteredToken}
                   onChange={(e) => setEnteredToken(e.target.value)}
                   placeholder="Secret Host Key"
-                  className="w-full p-3.5 bg-psych-black border-2 border-neutral-700 focus:border-psych-yellow rounded-xl font-mono text-sm text-white focus:outline-none"
+                  className="w-full p-3.5 bg-outwit-black border-2 border-neutral-700 focus:border-outwit-yellow rounded-xl font-mono text-sm text-white focus:outline-none"
                   required
                 />
               </div>
 
               {authError && (
-                <div className="p-3 bg-psych-red/10 border border-psych-red/40 rounded-xl text-xs text-psych-red">
+                <div className="p-3 bg-outwit-red/10 border border-outwit-red/40 rounded-xl text-xs text-outwit-red">
                   {authError}
                 </div>
               )}
 
               <button
                 type="submit"
-                className="w-full py-3.5 bg-psych-yellow hover:bg-yellow-400 text-psych-black font-extrabold text-sm rounded-xl btn-brutal uppercase tracking-wider"
+                className="w-full py-3.5 bg-outwit-yellow hover:bg-yellow-400 text-outwit-black font-extrabold text-sm rounded-xl btn-brutal uppercase tracking-wider"
               >
                 UNLOCK HOST DASHBOARD
               </button>
@@ -329,13 +329,13 @@ export const HostPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-psych-black text-white flex flex-col justify-between selection:bg-psych-yellow selection:text-psych-black">
+    <div className="min-h-screen bg-outwit-black text-white flex flex-col justify-between selection:bg-outwit-yellow selection:text-outwit-black">
       <Header roomCode={room.roomCode} playerCount={players.length} isHost={true} />
 
       <main className="flex-1 px-4 py-6">
         <div className="space-y-6">
           {actionError && (
-            <div className="w-full max-w-4xl mx-auto p-3 bg-psych-red/10 border border-psych-red/40 rounded-xl text-xs text-psych-red">
+            <div className="w-full max-w-4xl mx-auto p-3 bg-outwit-red/10 border border-outwit-red/40 rounded-xl text-xs text-outwit-red">
               {actionError}
             </div>
           )}

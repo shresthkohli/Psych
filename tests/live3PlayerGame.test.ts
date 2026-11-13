@@ -14,7 +14,7 @@ import {
 } from '../src/services/firestoreService';
 import { RoomSettings } from '../src/types/game';
 
-describe('PSYCH 3-Player Live Firebase Integration Test', () => {
+describe('OutWit 3-Player Live Firebase Integration Test', () => {
   it('runs complete 2-round game with 3 real anonymous players and verifies 1 vote = 1 score parity', async () => {
     // 1. Host creates room
     const hostAuth = getAuth();

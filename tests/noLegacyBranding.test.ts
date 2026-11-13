@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 
 describe('No Legacy Branding Verification', () => {
-  it('ensures no references to E-Cell, SVNIT, Surat, RMS, or ECEL remain in project files', () => {
-    const legacyRegex = /e-?cell|svnit|surat|\brms\b|\becel\b/i;
+  it('ensures no references to E-Cell, SVNIT, Surat, RMS, ECEL, or PSYCH remain in project files', () => {
+    const legacyRegex = /e-?cell|svnit|surat|\brms\b|\becel\b|psych/i;
     const allowedExtensions = new Set(['.ts', '.tsx', '.css', '.html', '.md']);
 
     function collectFiles(dir: string): string[] {
@@ -26,6 +26,8 @@ describe('No Legacy Branding Verification', () => {
       'index.html',
       'README.md',
       '.env.example',
+      'tailwind.config.js',
+      'package.json',
     ];
 
     const violations: { file: string; line: number; match: string }[] = [];

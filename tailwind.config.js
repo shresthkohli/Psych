@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        psych: {
+        outwit: {
           yellow: '#FFD400',
           black: '#101010',
           dark: '#1A1A1A',

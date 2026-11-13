@@ -286,11 +286,11 @@ export const RoomPage: React.FC = () => {
 
   if (isLoading || !authReady) {
     return (
-      <div className="min-h-screen bg-psych-black flex items-center justify-center p-4">
+      <div className="min-h-screen bg-outwit-black flex items-center justify-center p-4">
         <div className="text-center space-y-3">
-          <div className="w-12 h-12 mx-auto border-4 border-psych-yellow border-t-transparent rounded-full animate-spin" />
-          <p className="text-xs font-mono font-bold uppercase tracking-wider text-psych-yellow">
-            Connecting to PSYCH Room...
+          <div className="w-12 h-12 mx-auto border-4 border-outwit-yellow border-t-transparent rounded-full animate-spin" />
+          <p className="text-xs font-mono font-bold uppercase tracking-wider text-outwit-yellow">
+            Connecting to {APP_INFO.NAME} Room...
           </p>
         </div>
       </div>
@@ -299,17 +299,17 @@ export const RoomPage: React.FC = () => {
 
   if (errorMessage || !room) {
     return (
-      <div className="min-h-screen bg-psych-black text-white flex flex-col justify-between">
+      <div className="min-h-screen bg-outwit-black text-white flex flex-col justify-between">
         <Header />
         <div className="max-w-md mx-auto p-6 text-center space-y-4">
-          <div className="w-16 h-16 mx-auto rounded-full bg-psych-red/10 border-2 border-psych-red flex items-center justify-center text-psych-red">
+          <div className="w-16 h-16 mx-auto rounded-full bg-outwit-red/10 border-2 border-outwit-red flex items-center justify-center text-outwit-red">
             <AlertCircle className="w-8 h-8" />
           </div>
           <h2 className="text-2xl font-display font-black">Room Not Found</h2>
           <p className="text-sm text-neutral-400">{errorMessage || 'Unable to join this room.'}</p>
           <a
             href="/"
-            className="inline-block px-6 py-3 bg-psych-yellow text-psych-black font-extrabold text-xs rounded-xl btn-brutal uppercase tracking-wider"
+            className="inline-block px-6 py-3 bg-outwit-yellow text-outwit-black font-extrabold text-xs rounded-xl btn-brutal uppercase tracking-wider"
           >
             RETURN HOME
           </a>
@@ -320,12 +320,12 @@ export const RoomPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-psych-black text-white flex flex-col justify-between relative selection:bg-psych-yellow selection:text-psych-black">
+    <div className="min-h-screen bg-outwit-black text-white flex flex-col justify-between relative selection:bg-outwit-yellow selection:text-outwit-black">
       <div className="absolute inset-0 halftone-bg pointer-events-none opacity-40" />
 
       {/* Reconnection badge */}
       {!isOnline && (
-        <div className="bg-psych-red text-white py-1.5 px-4 text-center text-xs font-bold flex items-center justify-center gap-2 sticky top-0 z-50">
+        <div className="bg-outwit-red text-white py-1.5 px-4 text-center text-xs font-bold flex items-center justify-center gap-2 sticky top-0 z-50">
           <WifiOff className="w-4 h-4 animate-pulse" />
           <span>Connection lost! Reconnecting to live server...</span>
         </div>

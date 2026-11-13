@@ -44,11 +44,11 @@ export const AiQuestionsModal: React.FC<AiQuestionsModalProps> = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl bg-psych-dark border-2 border-psych-yellow rounded-2xl shadow-brutal p-6 overflow-hidden"
+        className="relative w-full max-w-2xl bg-outwit-dark border-2 border-outwit-yellow rounded-2xl shadow-brutal p-6 overflow-hidden"
       >
         <div className="flex items-center justify-between pb-4 border-b border-neutral-800">
           <div className="flex items-center gap-2">
-            <div className="p-2 bg-psych-yellow/10 rounded-lg border border-psych-yellow/30 text-psych-yellow">
+            <div className="p-2 bg-outwit-yellow/10 rounded-lg border border-outwit-yellow/30 text-outwit-yellow">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
@@ -80,7 +80,7 @@ export const AiQuestionsModal: React.FC<AiQuestionsModalProps> = ({
               <button
                 type="button"
                 onClick={handleClose}
-                className="px-6 py-2.5 bg-psych-yellow hover:bg-yellow-400 text-psych-black font-extrabold text-sm rounded-xl uppercase"
+                className="px-6 py-2.5 bg-outwit-yellow hover:bg-yellow-400 text-outwit-black font-extrabold text-sm rounded-xl uppercase"
               >
                 Close
               </button>

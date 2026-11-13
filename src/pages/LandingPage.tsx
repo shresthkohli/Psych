@@ -65,7 +65,7 @@ export const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-psych-black text-white flex flex-col justify-between selection:bg-psych-yellow selection:text-psych-black relative overflow-x-hidden">
+    <div className="min-h-screen bg-outwit-black text-white flex flex-col justify-between selection:bg-outwit-yellow selection:text-outwit-black relative overflow-x-hidden">
       {/* Background patterns */}
       <div className="absolute inset-0 halftone-bg pointer-events-none opacity-40" />
 
@@ -76,24 +76,24 @@ export const LandingPage: React.FC = () => {
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-12 relative z-10">
         <div className="max-w-3xl mx-auto text-center space-y-6">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-psych-dark border border-psych-yellow/40 text-xs font-mono font-bold tracking-wider text-psych-yellow shadow-md uppercase">
-            <Sparkles className="w-4 h-4 text-psych-yellow" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-outwit-dark border border-outwit-yellow/40 text-xs font-mono font-bold tracking-wider text-outwit-yellow shadow-md uppercase">
+            <Sparkles className="w-4 h-4 text-outwit-yellow" />
             <span>{APP_INFO.BADGE}</span>
           </div>
 
-          {/* Huge PSYCH Title */}
+          {/* Huge title */}
           <div className="relative inline-block">
             <h1 className="text-6xl sm:text-8xl md:text-9xl font-display font-black tracking-tighter text-white transform -rotate-1 select-none">
-              PSYCH<span className="text-psych-yellow font-comic">!</span>
+              {APP_INFO.NAME}<span className="text-outwit-yellow font-comic">!</span>
             </h1>
-            <div className="absolute -bottom-3 right-0 bg-psych-red text-white text-[11px] md:text-xs font-black uppercase tracking-wider px-3 py-1 rounded-md shadow-brutal transform rotate-2">
+            <div className="absolute -bottom-3 right-0 bg-outwit-red text-white text-[11px] md:text-xs font-black uppercase tracking-wider px-3 py-1 rounded-md shadow-brutal transform rotate-2">
               PARTY EDITION
             </div>
           </div>
 
           {/* Subtitle */}
           <div className="space-y-2 pt-2">
-            <p className="text-2xl sm:text-3xl font-display font-black text-psych-yellow tracking-tight">
+            <p className="text-2xl sm:text-3xl font-display font-black text-outwit-yellow tracking-tight">
               Think fast. Write wild. Read minds.
             </p>
             <p className="text-base sm:text-lg text-neutral-300 max-w-xl mx-auto leading-relaxed">
@@ -105,7 +105,7 @@ export const LandingPage: React.FC = () => {
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
             <button
               onClick={() => setRoomModalOpen(true)}
-              className="w-full sm:w-auto px-8 py-4 bg-psych-yellow hover:bg-yellow-400 text-psych-black font-display font-black text-base rounded-2xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider shadow-brutal-lg"
+              className="w-full sm:w-auto px-8 py-4 bg-outwit-yellow hover:bg-yellow-400 text-outwit-black font-display font-black text-base rounded-2xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider shadow-brutal-lg"
             >
               <PlusCircle className="w-5 h-5 stroke-[2.5]" />
               <span>CREATE A GAME</span>
@@ -113,7 +113,7 @@ export const LandingPage: React.FC = () => {
 
             <button
               onClick={() => navigate('/join')}
-              className="w-full sm:w-auto px-8 py-4 bg-psych-dark hover:bg-neutral-800 text-white font-display font-extrabold text-base rounded-2xl border-2 border-neutral-700 hover:border-psych-yellow flex items-center justify-center gap-2 uppercase tracking-wider transition-all"
+              className="w-full sm:w-auto px-8 py-4 bg-outwit-dark hover:bg-neutral-800 text-white font-display font-extrabold text-base rounded-2xl border-2 border-neutral-700 hover:border-outwit-yellow flex items-center justify-center gap-2 uppercase tracking-wider transition-all"
             >
               <Play className="w-5 h-5 fill-white" />
               <span>JOIN A GAME</span>
@@ -124,26 +124,26 @@ export const LandingPage: React.FC = () => {
           <div className="pt-4">
             <button
               onClick={() => setIsRulesOpen(true)}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-neutral-400 hover:text-psych-yellow transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-neutral-400 hover:text-outwit-yellow transition-colors"
             >
               <HelpCircle className="w-4 h-4" />
-              <span>How PSYCH scoring works (1 vote = 1 point)</span>
+              <span>How {APP_INFO.NAME} scoring works (1 vote = 1 point)</span>
             </button>
           </div>
         </div>
 
         {/* Features highlight pills */}
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl w-full">
-          <div className="p-4 bg-psych-cardBg/90 border border-neutral-800 rounded-2xl space-y-1">
-            <span className="text-psych-yellow font-black text-sm">01 / ANONYMOUS ANSWERS</span>
+          <div className="p-4 bg-outwit-cardBg/90 border border-neutral-800 rounded-2xl space-y-1">
+            <span className="text-outwit-yellow font-black text-sm">01 / ANONYMOUS ANSWERS</span>
             <p className="text-xs text-neutral-400">Write punchy responses in 120s without revealing your name.</p>
           </div>
-          <div className="p-4 bg-psych-cardBg/90 border border-neutral-800 rounded-2xl space-y-1">
-            <span className="text-psych-yellow font-black text-sm">02 / LIVE MOBILE VOTING</span>
+          <div className="p-4 bg-outwit-cardBg/90 border border-neutral-800 rounded-2xl space-y-1">
+            <span className="text-outwit-yellow font-black text-sm">02 / LIVE MOBILE VOTING</span>
             <p className="text-xs text-neutral-400">Pick the funniest or smartest response in 90s on your phone.</p>
           </div>
-          <div className="p-4 bg-psych-cardBg/90 border border-neutral-800 rounded-2xl space-y-1">
-            <span className="text-psych-red font-black text-sm">03 / REAL-TIME LEADERBOARD</span>
+          <div className="p-4 bg-outwit-cardBg/90 border border-neutral-800 rounded-2xl space-y-1">
+            <span className="text-outwit-red font-black text-sm">03 / REAL-TIME LEADERBOARD</span>
             <p className="text-xs text-neutral-400">Reveal authors, award bonus points, and crown the champion.</p>
           </div>
         </div>
@@ -160,10 +160,10 @@ export const LandingPage: React.FC = () => {
       {/* Room Creation Modal */}
       {roomModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
-          <div className="max-w-lg w-full bg-psych-dark border-2 border-psych-yellow rounded-2xl p-6 shadow-brutal space-y-5">
+          <div className="max-w-lg w-full bg-outwit-dark border-2 border-outwit-yellow rounded-2xl p-6 shadow-brutal space-y-5">
             <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
               <h2 className="text-xl font-display font-black text-white uppercase tracking-tight">
-                Create PSYCH Room
+                Create {APP_INFO.NAME} Room
               </h2>
               <button
                 onClick={() => setRoomModalOpen(false)}
@@ -183,7 +183,7 @@ export const LandingPage: React.FC = () => {
                   maxLength={GAME_LIMITS.ROOM_NAME_MAX_LENGTH}
                   value={roomName}
                   onChange={(e) => setRoomName(e.target.value)}
-                  className="w-full p-3 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none"
+                  className="w-full p-3 bg-outwit-black border border-neutral-700 rounded-xl text-white text-sm focus:border-outwit-yellow focus:outline-none"
                   required
                 />
               </div>
@@ -198,7 +198,7 @@ export const LandingPage: React.FC = () => {
                   maxLength={GAME_LIMITS.EVENT_LABEL_MAX_LENGTH}
                   value={eventLabel}
                   onChange={(e) => setEventLabel(e.target.value)}
-                  className="w-full p-3 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none"
+                  className="w-full p-3 bg-outwit-black border border-neutral-700 rounded-xl text-white text-sm focus:border-outwit-yellow focus:outline-none"
                 />
                 <p className="text-[11px] text-neutral-500 mt-1">
                   Shown in the lobby and used to personalise AI-generated questions.
@@ -216,7 +216,7 @@ export const LandingPage: React.FC = () => {
                     max={GAME_LIMITS.MAX_QUESTIONS_PER_GAME}
                     value={totalRounds}
                     onChange={(e) => setTotalRounds(Number(e.target.value))}
-                    className="w-full p-3 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none"
+                    className="w-full p-3 bg-outwit-black border border-neutral-700 rounded-xl text-white text-sm focus:border-outwit-yellow focus:outline-none"
                   />
                   <p className="text-[11px] text-neutral-500 mt-1">
                     You can start after typing {minQuestionsToStart(clampTotalRounds(totalRounds))} — add the rest during the game.
@@ -230,7 +230,7 @@ export const LandingPage: React.FC = () => {
                   <select
                     value={maxWords}
                     onChange={(e) => setMaxWords(Number(e.target.value))}
-                    className="w-full p-3 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none"
+                    className="w-full p-3 bg-outwit-black border border-neutral-700 rounded-xl text-white text-sm focus:border-outwit-yellow focus:outline-none"
                   >
                     <option value={30}>30 Words</option>
                     <option value={40}>40 Words</option>
@@ -249,7 +249,7 @@ export const LandingPage: React.FC = () => {
                   max={GAME_LIMITS.MAX_PLAYERS_CAP}
                   value={maxPlayers}
                   onChange={(e) => setMaxPlayers(Number(e.target.value))}
-                  className="w-full p-3 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none"
+                  className="w-full p-3 bg-outwit-black border border-neutral-700 rounded-xl text-white text-sm focus:border-outwit-yellow focus:outline-none"
                 />
               </div>
 
@@ -261,7 +261,7 @@ export const LandingPage: React.FC = () => {
                   <select
                     value={answerDuration}
                     onChange={(e) => setAnswerDuration(Number(e.target.value))}
-                    className="w-full p-3 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none"
+                    className="w-full p-3 bg-outwit-black border border-neutral-700 rounded-xl text-white text-sm focus:border-outwit-yellow focus:outline-none"
                   >
                     <option value={60}>60 Seconds</option>
                     <option value={90}>90 Seconds</option>
@@ -276,7 +276,7 @@ export const LandingPage: React.FC = () => {
                   <select
                     value={votingDuration}
                     onChange={(e) => setVotingDuration(Number(e.target.value))}
-                    className="w-full p-3 bg-psych-black border border-neutral-700 rounded-xl text-white text-sm focus:border-psych-yellow focus:outline-none"
+                    className="w-full p-3 bg-outwit-black border border-neutral-700 rounded-xl text-white text-sm focus:border-outwit-yellow focus:outline-none"
                   >
                     <option value={45}>45 Seconds</option>
                     <option value={60}>60 Seconds</option>
@@ -286,7 +286,7 @@ export const LandingPage: React.FC = () => {
               </div>
 
               {createError && (
-                <div className="p-3 bg-psych-red/10 border border-psych-red/40 rounded-xl text-xs text-psych-red">
+                <div className="p-3 bg-outwit-red/10 border border-outwit-red/40 rounded-xl text-xs text-outwit-red">
                   {createError}
                 </div>
               )}
@@ -295,7 +295,7 @@ export const LandingPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isCreatingRoom}
-                  className="w-full py-3.5 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-50 text-psych-black font-extrabold text-sm rounded-xl btn-brutal uppercase tracking-wider flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-outwit-yellow hover:bg-yellow-400 disabled:opacity-50 text-outwit-black font-extrabold text-sm rounded-xl btn-brutal uppercase tracking-wider flex items-center justify-center gap-2"
                 >
                   {isCreatingRoom ? 'INITIALIZING ROOM...' : 'LAUNCH ROOM AS HOST'}
                 </button>

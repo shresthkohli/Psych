@@ -1,4 +1,5 @@
 import { RoundScore, LeaderboardEntry, Player } from '../types/game';
+import { APP_INFO } from '../constants/appInfo';
 
 /**
  * Normalizes text and counts meaningful whitespace-separated tokens.
@@ -227,11 +228,11 @@ export function computeLeaderboard(
 }
 
 /**
- * Generates an uppercase, human-readable room code (e.g. MIND27, PSYCH8).
+ * Generates an uppercase, human-readable room code (e.g. MIND27, OUTWIT7).
  * Avoids ambiguous characters like O, 0, I, 1.
  */
 export function generateRoomCode(): string {
-  const words = ['MIND', 'PSYCH', 'PARTY', 'CHAOS', 'BRAIN', 'SHARK', 'FLASH', 'TITAN', 'NOVA', 'SMART'];
+  const words = ['MIND', APP_INFO.NAME.toUpperCase(), 'PARTY', 'CHAOS', 'BRAIN', 'SHARK', 'FLASH', 'TITAN', 'NOVA', 'SMART'];
   const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
   const prefix = words[Math.floor(Math.random() * words.length)];
   let suffix = '';

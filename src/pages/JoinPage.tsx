@@ -87,15 +87,15 @@ export const JoinPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-psych-black text-white flex flex-col justify-between relative selection:bg-psych-yellow selection:text-psych-black">
+    <div className="min-h-screen bg-outwit-black text-white flex flex-col justify-between relative selection:bg-outwit-yellow selection:text-outwit-black">
       <div className="absolute inset-0 halftone-bg pointer-events-none opacity-40" />
 
       <Header />
 
       <main className="flex-1 flex items-center justify-center px-4 py-8 relative z-10">
-        <div className="w-full max-w-md bg-psych-cardBg border-2 border-psych-yellow rounded-3xl p-6 md:p-8 shadow-brutal space-y-6">
+        <div className="w-full max-w-md bg-outwit-cardBg border-2 border-outwit-yellow rounded-3xl p-6 md:p-8 shadow-brutal space-y-6">
           <div className="text-center space-y-1">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-psych-yellow/15 border border-psych-yellow/40 text-psych-yellow text-xs font-mono font-bold tracking-wide uppercase">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-outwit-yellow/15 border border-outwit-yellow/40 text-outwit-yellow text-xs font-mono font-bold tracking-wide uppercase">
               <Sparkles className="w-3.5 h-3.5" />
               JOIN MULTIPLAYER ROOM
             </span>
@@ -118,7 +118,7 @@ export const JoinPage: React.FC = () => {
                 onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
                 placeholder="e.g. MIND27"
                 maxLength={10}
-                className="w-full p-3.5 bg-psych-black border-2 border-neutral-700 focus:border-psych-yellow rounded-xl font-mono font-extrabold text-lg text-psych-yellow tracking-widest placeholder-neutral-600 focus:outline-none transition-colors"
+                className="w-full p-3.5 bg-outwit-black border-2 border-neutral-700 focus:border-outwit-yellow rounded-xl font-mono font-extrabold text-lg text-outwit-yellow tracking-widest placeholder-neutral-600 focus:outline-none transition-colors"
                 required
               />
             </div>
@@ -133,13 +133,13 @@ export const JoinPage: React.FC = () => {
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="e.g. QuizWhiz"
                 maxLength={20}
-                className="w-full p-3.5 bg-psych-black border-2 border-neutral-700 focus:border-psych-yellow rounded-xl text-base text-white placeholder-neutral-600 focus:outline-none transition-colors"
+                className="w-full p-3.5 bg-outwit-black border-2 border-neutral-700 focus:border-outwit-yellow rounded-xl text-base text-white placeholder-neutral-600 focus:outline-none transition-colors"
                 required
               />
             </div>
 
             {errorMessage && (
-              <div className="flex items-center gap-2 p-3 bg-psych-red/10 border border-psych-red/40 rounded-xl text-xs text-psych-red">
+              <div className="flex items-center gap-2 p-3 bg-outwit-red/10 border border-outwit-red/40 rounded-xl text-xs text-outwit-red">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <span>{errorMessage}</span>
               </div>
@@ -148,10 +148,10 @@ export const JoinPage: React.FC = () => {
             <button
               type="submit"
               disabled={isJoining}
-              className="w-full py-4 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-50 text-psych-black font-extrabold text-sm rounded-xl btn-brutal uppercase tracking-wider flex items-center justify-center gap-2 shadow-brutal"
+              className="w-full py-4 bg-outwit-yellow hover:bg-yellow-400 disabled:opacity-50 text-outwit-black font-extrabold text-sm rounded-xl btn-brutal uppercase tracking-wider flex items-center justify-center gap-2 shadow-brutal"
             >
               <LogIn className="w-4 h-4" />
-              <span>{isJoining ? 'JOINING ROOM...' : 'JOIN PSYCH GAME'}</span>
+              <span>{isJoining ? 'JOINING ROOM...' : `JOIN ${APP_INFO.NAME.toUpperCase()} GAME`}</span>
             </button>
           </form>
 

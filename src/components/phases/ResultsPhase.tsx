@@ -102,7 +102,7 @@ export const ResultsPhase: React.FC<ResultsPhaseProps> = ({
     <div className="w-full max-w-2xl mx-auto space-y-6 animate-fade-in">
       {/* Round Results Header */}
       <div className="text-center space-y-1">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-psych-yellow/15 border border-psych-yellow/40 text-psych-yellow text-xs font-mono font-bold tracking-wide uppercase">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-outwit-yellow/15 border border-outwit-yellow/40 text-outwit-yellow text-xs font-mono font-bold tracking-wide uppercase">
           ROUND {round.roundNumber} COMPLETE
         </span>
         <h1 className="text-3xl md:text-4xl font-display font-black text-white tracking-tight">
@@ -115,13 +115,13 @@ export const ResultsPhase: React.FC<ResultsPhaseProps> = ({
 
       {/* User's Round Summary Card */}
       {currentUserScore && (
-        <div className="bg-psych-cardBg border-2 border-psych-yellow rounded-2xl p-5 shadow-brutal flex items-center justify-between">
+        <div className="bg-outwit-cardBg border-2 border-outwit-yellow rounded-2xl p-5 shadow-brutal flex items-center justify-between">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
               YOUR ROUND EARNINGS
             </span>
             <div className="flex items-baseline gap-2 mt-0.5">
-              <span className="text-3xl font-mono font-black text-psych-yellow">
+              <span className="text-3xl font-mono font-black text-outwit-yellow">
                 +{currentUserScore.totalRoundPoints} PTS
               </span>
               <span className="text-xs px-2.5 py-0.5 bg-neutral-800 text-neutral-200 font-bold rounded-full">
@@ -158,14 +158,14 @@ export const ResultsPhase: React.FC<ResultsPhaseProps> = ({
               key={answer.id}
               className={`p-5 rounded-2xl border-2 transition-all relative overflow-hidden ${
                 isWinner && revealStage >= 3
-                  ? 'bg-neutral-900 border-psych-yellow shadow-brutal-lg ring-2 ring-psych-yellow/30'
-                  : 'bg-psych-cardBg border-neutral-800'
+                  ? 'bg-neutral-900 border-outwit-yellow shadow-brutal-lg ring-2 ring-outwit-yellow/30'
+                  : 'bg-outwit-cardBg border-neutral-800'
               }`}
             >
               {/* Winner sticker badge */}
               {isWinner && revealStage >= 3 && (
-                <div className="absolute top-0 right-0 bg-psych-red text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-bl-xl shadow-md flex items-center gap-1">
-                  <Flame className="w-3 h-3 text-psych-yellow fill-psych-yellow" />
+                <div className="absolute top-0 right-0 bg-outwit-red text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-bl-xl shadow-md flex items-center gap-1">
+                  <Flame className="w-3 h-3 text-outwit-yellow fill-outwit-yellow" />
                   <span>MOST VOTED</span>
                 </div>
               )}
@@ -182,9 +182,9 @@ export const ResultsPhase: React.FC<ResultsPhaseProps> = ({
                   <div className="flex items-center gap-2">
                     {revealStage >= 2 ? (
                       <span className="flex items-center gap-1.5 font-bold text-neutral-200">
-                        <UserCheck className="w-4 h-4 text-psych-yellow" />
+                        <UserCheck className="w-4 h-4 text-outwit-yellow" />
                         <span>Written by <strong className="text-white">{authorName}</strong></span>
-                        {isMe && <span className="text-[10px] bg-psych-yellow text-black px-1.5 rounded font-black">YOU</span>}
+                        {isMe && <span className="text-[10px] bg-outwit-yellow text-black px-1.5 rounded font-black">YOU</span>}
                       </span>
                     ) : (
                       <span className="text-neutral-500 italic">Revealing author...</span>
@@ -193,7 +193,7 @@ export const ResultsPhase: React.FC<ResultsPhaseProps> = ({
 
                   {/* Vote Count */}
                   <div className="flex items-center gap-1.5">
-                    <span className="font-mono font-black text-xl text-psych-yellow">
+                    <span className="font-mono font-black text-xl text-outwit-yellow">
                       {votesCount}
                     </span>
                     <span className="text-neutral-300 font-bold uppercase text-[11px]">
@@ -212,7 +212,7 @@ export const ResultsPhase: React.FC<ResultsPhaseProps> = ({
 
       {/* Host Controls for Next Round / End Game */}
       {isHost && (
-        <div className="p-4 bg-neutral-900 border-2 border-psych-yellow/40 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 sticky bottom-4 shadow-2xl">
+        <div className="p-4 bg-neutral-900 border-2 border-outwit-yellow/40 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 sticky bottom-4 shadow-2xl">
           <span className="text-xs text-neutral-300 font-medium">
             {!isFinalRound && nextRoundBlockReason
               ? nextRoundBlockReason
@@ -224,7 +224,7 @@ export const ResultsPhase: React.FC<ResultsPhaseProps> = ({
           {isFinalRound ? (
             <button
               onClick={onEndGame}
-              className="w-full sm:w-auto px-6 py-3 bg-psych-red hover:bg-red-600 text-white font-extrabold text-sm rounded-xl btn-brutal-red flex items-center justify-center gap-2 uppercase tracking-wider"
+              className="w-full sm:w-auto px-6 py-3 bg-outwit-red hover:bg-red-600 text-white font-extrabold text-sm rounded-xl btn-brutal-red flex items-center justify-center gap-2 uppercase tracking-wider"
             >
               <span>VIEW FINAL CEREMONY</span>
               <Trophy className="w-4 h-4" />
@@ -233,7 +233,7 @@ export const ResultsPhase: React.FC<ResultsPhaseProps> = ({
             <button
               onClick={onNextRound}
               disabled={nextRoundBlockReason !== null}
-              className="w-full sm:w-auto px-6 py-3 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
+              className="w-full sm:w-auto px-6 py-3 bg-outwit-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-outwit-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
             >
               <span>START ROUND {room.currentRoundNumber + 1}</span>
               <ArrowRight className="w-4 h-4" />

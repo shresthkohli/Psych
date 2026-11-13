@@ -10,8 +10,8 @@ export const PausedOverlay: React.FC<PausedOverlayProps> = ({ isPaused }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
-      <div className="max-w-md w-full bg-psych-dark border-4 border-psych-yellow rounded-2xl p-6 text-center shadow-brutal space-y-4">
-        <div className="w-16 h-16 mx-auto rounded-full bg-psych-yellow/10 border-2 border-psych-yellow flex items-center justify-center text-psych-yellow animate-pulse">
+      <div className="max-w-md w-full bg-outwit-dark border-4 border-outwit-yellow rounded-2xl p-6 text-center shadow-brutal space-y-4">
+        <div className="w-16 h-16 mx-auto rounded-full bg-outwit-yellow/10 border-2 border-outwit-yellow flex items-center justify-center text-outwit-yellow animate-pulse">
           <PauseCircle className="w-10 h-10" />
         </div>
 
@@ -24,7 +24,7 @@ export const PausedOverlay: React.FC<PausedOverlayProps> = ({ isPaused }) => {
           </p>
         </div>
 
-        <div className="p-3 bg-psych-black rounded-xl border border-neutral-800 text-xs text-psych-yellow font-mono">
+        <div className="p-3 bg-outwit-black rounded-xl border border-neutral-800 text-xs text-outwit-yellow font-mono">
           Hang tight! The round will resume right where you left off.
         </div>
       </div>

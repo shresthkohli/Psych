@@ -1,5 +1,9 @@
-// Web Audio API Synthesizer for PSYCH Game
+// Web Audio API Synthesizer for OutWit Game
 // Zero external network dependencies, instant response, mobile-friendly.
+
+import { APP_INFO } from '../constants/appInfo';
+
+const SOUND_KEY = `${APP_INFO.STORAGE_PREFIX}_sound_enabled`;
 
 class SoundManager {
   private ctx: AudioContext | null = null;
@@ -8,7 +12,7 @@ class SoundManager {
   constructor() {
     // Read user preference from localStorage (Default is OFF as requested)
     if (typeof localStorage !== 'undefined') {
-      const stored = localStorage.getItem('psych_sound_enabled');
+      const stored = localStorage.getItem(SOUND_KEY);
       this.isEnabled = stored === 'true';
     }
   }
@@ -20,7 +24,7 @@ class SoundManager {
   public toggle(): boolean {
     this.isEnabled = !this.isEnabled;
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('psych_sound_enabled', String(this.isEnabled));
+      localStorage.setItem(SOUND_KEY, String(this.isEnabled));
     }
     if (this.isEnabled) {
       this.initCtx();
@@ -32,7 +36,7 @@ class SoundManager {
   public setEnabled(enable: boolean) {
     this.isEnabled = enable;
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('psych_sound_enabled', String(enable));
+      localStorage.setItem(SOUND_KEY, String(enable));
     }
     if (enable) {
       this.initCtx();

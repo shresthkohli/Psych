@@ -26,7 +26,7 @@ export function exportLeaderboardToCSV(
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.setAttribute('href', url);
-  link.setAttribute('download', `PSYCH_${roomCode}_Leaderboard.csv`);
+  link.setAttribute('download', `${APP_INFO.LEADERBOARD_FILE_PREFIX}_${roomCode}_Leaderboard.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

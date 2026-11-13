@@ -1,4 +1,5 @@
 import { GAME_LIMITS } from '../constants/gameLimits';
+import { APP_INFO } from '../constants/appInfo';
 import {
   AiPromptOption,
   BRUTALITY_LEVELS,
@@ -41,7 +42,7 @@ function findOption(options: readonly AiPromptOption[], id: string, defaultId: s
   );
 }
 
-/** Build the copy-paste prompt for an external AI chat to generate a CSV of custom PSYCH questions. */
+/** Build the copy-paste prompt for an external AI chat to generate a CSV of custom OutWit questions. */
 export function buildAiQuestionPrompt(input: AiPromptInput): string {
   const mood = findOption(MOODS, input.moodId, DEFAULT_MOOD_ID);
   const brutality = findOption(BRUTALITY_LEVELS, input.brutalityId, DEFAULT_BRUTALITY_ID);
@@ -65,7 +66,7 @@ export function buildAiQuestionPrompt(input: AiPromptInput): string {
   const maxWords = input.maxAnswerWords;
 
   const lines: string[] = [
-    `You are the question-writer for PSYCH, a party game. Everyone in the room gets the same question, secretly writes a short funny answer (maximum ${maxWords} words), and then everyone votes for the answer they like best. Your job: write ${count} questions for MY group.`,
+    `You are the question-writer for ${APP_INFO.NAME}, a party game. Everyone in the room gets the same question, secretly writes a short funny answer (maximum ${maxWords} words), and then everyone votes for the answer they like best. Your job: write ${count} questions for MY group.`,
     '',
     'ABOUT MY GROUP (use this - it is the whole point)',
   ];
@@ -96,7 +97,7 @@ export function buildAiQuestionPrompt(input: AiPromptInput): string {
     '5. Mix the lengths and formats so it does not feel repetitive. Order them from easier warm-ups to wilder ones.',
     '',
     'HOW TO DELIVER (very important)',
-    '- Create a downloadable CSV FILE named psych_questions.csv using whatever file tool you have (code interpreter, file creation, canvas, artifacts) and give me the file to download. Do NOT just type the questions in your chat reply.',
+    `- Create a downloadable CSV FILE named ${APP_INFO.AI_QUESTIONS_FILE_NAME} using whatever file tool you have (code interpreter, file creation, canvas, artifacts) and give me the file to download. Do NOT just type the questions in your chat reply.`,
     `- File format: UTF-8, first line is the header number,question then exactly ${count} rows. Put every question in double quotes and double any quote mark inside it. Example:`,
     'number,question',
     '1,"Describe our group chat in the most dramatic way possible."',

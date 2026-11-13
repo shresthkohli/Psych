@@ -76,7 +76,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
   return (
     <div className="w-full max-w-xl mx-auto space-y-5 animate-fade-in">
       {/* Sticky Top Timer */}
-      <div className="sticky top-14 z-30 pt-1 pb-2 bg-psych-black/90 backdrop-blur">
+      <div className="sticky top-14 z-30 pt-1 pb-2 bg-outwit-black/90 backdrop-blur">
         <UrgencyTimer
           countdown={countdown}
           label={`ROUND ${round.roundNumber} • ${userAnswer && !isEditing ? 'WAITING FOR PLAYERS' : 'WRITE YOUR ANSWER'}`}
@@ -85,13 +85,13 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
       </div>
 
       {/* Prominent Question Card */}
-      <div className="relative bg-psych-cardBg border-2 border-psych-yellow rounded-2xl p-6 shadow-brutal web-corner-tl web-corner-br">
+      <div className="relative bg-outwit-cardBg border-2 border-outwit-yellow rounded-2xl p-6 shadow-brutal web-corner-tl web-corner-br">
         <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-psych-yellow">
+          <span className="text-xs font-mono font-bold uppercase tracking-wider text-outwit-yellow">
             QUESTION {round.roundNumber} OF {room.settings.totalRounds}
           </span>
           <div className="flex items-center gap-1.5 text-xs text-neutral-400">
-            <Users className="w-3.5 h-3.5 text-psych-yellow" />
+            <Users className="w-3.5 h-3.5 text-outwit-yellow" />
             <span>
               {submittedCount} / {players.length} submitted
             </span>
@@ -111,7 +111,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
       {hasUserSubmitted && !isEditing ? (
         <div className="space-y-4 animate-fade-in">
           {/* Submission Confirmation Bar */}
-          <div className="bg-psych-cardBg border-2 border-green-500/60 rounded-2xl p-4 shadow-brutal flex items-center justify-between">
+          <div className="bg-outwit-cardBg border-2 border-green-500/60 rounded-2xl p-4 shadow-brutal flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center font-bold">
                 <CheckCircle2 className="w-5 h-5" />
@@ -126,7 +126,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
             {room.settings.allowAnswerEdits && !isClosed && (
               <button
                 onClick={handleEditClick}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-psych-yellow rounded-xl text-xs font-bold transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-outwit-yellow rounded-xl text-xs font-bold transition-colors"
               >
                 <Edit3 className="w-3.5 h-3.5" />
                 <span>Edit</span>
@@ -142,7 +142,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
           )}
 
           {/* Leaderboard & Live Submission Status Tracker */}
-          <div className="bg-psych-cardBg border-2 border-psych-yellow/40 rounded-2xl p-5 shadow-brutal space-y-4">
+          <div className="bg-outwit-cardBg border-2 border-outwit-yellow/40 rounded-2xl p-5 shadow-brutal space-y-4">
             <div className="space-y-2 pb-3 border-b border-neutral-800">
               <div className="flex items-center justify-between">
                 <div>
@@ -153,7 +153,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
                     Moves automatically to voting once everyone submits!
                   </span>
                 </div>
-                <div className="px-2.5 py-1 rounded-lg bg-psych-yellow/15 text-psych-yellow text-xs font-mono font-bold">
+                <div className="px-2.5 py-1 rounded-lg bg-outwit-yellow/15 text-outwit-yellow text-xs font-mono font-bold">
                   {submittedCount}/{players.length} Submitted
                 </div>
               </div>
@@ -161,7 +161,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
               {/* Progress Bar */}
               <div className="w-full h-2 bg-neutral-800 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-psych-yellow transition-all duration-300"
+                  className="h-full bg-outwit-yellow transition-all duration-300"
                   style={{ width: `${Math.min(100, (submittedCount / Math.max(1, players.length)) * 100)}%` }}
                 />
               </div>
@@ -193,7 +193,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
                     key={entry.playerId}
                     className={`flex items-center justify-between p-3 rounded-xl border transition-all ${
                       entry.isCurrentUser
-                        ? 'bg-psych-yellow/10 border-psych-yellow ring-1 ring-psych-yellow/30'
+                        ? 'bg-outwit-yellow/10 border-outwit-yellow ring-1 ring-outwit-yellow/30'
                         : 'bg-neutral-900/60 border-neutral-800'
                     }`}
                   >
@@ -205,14 +205,14 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
                         {entry.displayName}
                       </span>
                       {entry.isCurrentUser && (
-                        <span className="text-[9px] bg-psych-yellow text-black px-1.5 py-0.2 rounded font-black">
+                        <span className="text-[9px] bg-outwit-yellow text-black px-1.5 py-0.2 rounded font-black">
                           YOU
                         </span>
                       )}
                     </div>
 
                     <div className="flex items-center gap-3 flex-shrink-0">
-                      <span className="font-mono text-xs font-bold text-psych-yellow">
+                      <span className="font-mono text-xs font-bold text-outwit-yellow">
                         {entry.totalScore} pts
                       </span>
 
@@ -237,7 +237,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
       ) : (
         /* Writing form */
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="bg-psych-cardBg border border-psych-borderDark rounded-2xl p-4 focus-within:border-psych-yellow transition-colors">
+          <div className="bg-outwit-cardBg border border-outwit-borderDark rounded-2xl p-4 focus-within:border-outwit-yellow transition-colors">
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
@@ -253,7 +253,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
               <span
                 className={`font-mono font-bold ${
                   wordCount > maxWords
-                    ? 'text-psych-red'
+                    ? 'text-outwit-red'
                     : wordCount < minWords && wordCount > 0
                     ? 'text-orange-400'
                     : 'text-neutral-400'
@@ -269,7 +269,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
               )}
 
               {wordCount > maxWords && (
-                <span className="text-[11px] text-psych-red">
+                <span className="text-[11px] text-outwit-red">
                   {wordCount - maxWords} words over limit
                 </span>
               )}
@@ -277,7 +277,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
           </div>
 
           {errorMessage && (
-            <div className="flex items-center gap-2 p-3 bg-psych-red/10 border border-psych-red/40 rounded-xl text-xs text-psych-red">
+            <div className="flex items-center gap-2 p-3 bg-outwit-red/10 border border-outwit-red/40 rounded-xl text-xs text-outwit-red">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{errorMessage}</span>
             </div>
@@ -286,7 +286,7 @@ export const AnsweringPhase: React.FC<AnsweringPhaseProps> = ({
           <button
             type="submit"
             disabled={!validation.valid || isSubmitting || isClosed}
-            className="w-full py-3.5 bg-psych-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-psych-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
+            className="w-full py-3.5 bg-outwit-yellow hover:bg-yellow-400 disabled:opacity-40 disabled:cursor-not-allowed text-outwit-black font-extrabold text-sm rounded-xl btn-brutal flex items-center justify-center gap-2 uppercase tracking-wider"
           >
             {isSubmitting ? (
               <span>SAVING SUBMISSION...</span>

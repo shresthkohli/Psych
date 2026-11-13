@@ -79,9 +79,9 @@ export const AiImportStep: React.FC<AiImportStepProps> = ({
         </label>
         <label
           htmlFor="ai-csv-file"
-          className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed border-neutral-700 hover:border-psych-yellow bg-psych-black cursor-pointer text-sm text-neutral-300"
+          className="flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed border-neutral-700 hover:border-outwit-yellow bg-outwit-black cursor-pointer text-sm text-neutral-300"
         >
-          <Upload className="w-4 h-4 text-psych-yellow" />
+          <Upload className="w-4 h-4 text-outwit-yellow" />
           <span>Choose .csv or .txt file</span>
           <input
             id="ai-csv-file"
@@ -97,7 +97,7 @@ export const AiImportStep: React.FC<AiImportStepProps> = ({
         <button
           type="button"
           onClick={() => setPasteOpen((prev) => !prev)}
-          className="text-xs font-bold text-psych-yellow hover:underline"
+          className="text-xs font-bold text-outwit-yellow hover:underline"
         >
           {pasteOpen ? 'Hide pasted text' : 'Paste CSV text instead'}
         </button>
@@ -108,7 +108,7 @@ export const AiImportStep: React.FC<AiImportStepProps> = ({
               value={pastedText}
               onChange={(e) => setPastedText(e.target.value)}
               placeholder="Paste CSV text returned by AI..."
-              className="w-full bg-psych-black border border-neutral-700 rounded-xl p-2.5 text-xs font-mono text-white focus:border-psych-yellow focus:outline-none"
+              className="w-full bg-outwit-black border border-neutral-700 rounded-xl p-2.5 text-xs font-mono text-white focus:border-outwit-yellow focus:outline-none"
             />
             <button
               type="button"
@@ -122,18 +122,18 @@ export const AiImportStep: React.FC<AiImportStepProps> = ({
         )}
       </div>
 
-      {reading && <p className="text-xs text-psych-yellow">Reading...</p>}
+      {reading && <p className="text-xs text-outwit-yellow">Reading...</p>}
       {parseError && (
-        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-psych-red/10 border border-psych-red/40 text-xs text-psych-red">
+        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-outwit-red/10 border border-outwit-red/40 text-xs text-outwit-red">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{parseError}</span>
         </div>
       )}
 
       {preview && (
-        <div className="space-y-3 p-3 rounded-xl bg-psych-black border border-neutral-800">
+        <div className="space-y-3 p-3 rounded-xl bg-outwit-black border border-neutral-800">
           {acceptedCount === 0 ? (
-            <p className="text-xs font-bold text-psych-red">No usable questions found</p>
+            <p className="text-xs font-bold text-outwit-red">No usable questions found</p>
           ) : (
             <div className="space-y-1.5">
               <p className="text-xs font-bold text-green-400 flex items-center gap-1.5">
@@ -165,7 +165,7 @@ export const AiImportStep: React.FC<AiImportStepProps> = ({
         </div>
       )}
 
-      {importError && <p className="text-xs text-psych-red">{importError}</p>}
+      {importError && <p className="text-xs text-outwit-red">{importError}</p>}
 
       <div className="flex items-center justify-between pt-2 border-t border-neutral-800">
         <button
@@ -180,7 +180,7 @@ export const AiImportStep: React.FC<AiImportStepProps> = ({
           type="button"
           disabled={acceptedCount === 0 || saving || reading}
           onClick={handleAddClick}
-          className="px-4 py-2.5 rounded-xl bg-psych-yellow hover:bg-yellow-400 text-psych-black font-extrabold text-sm uppercase disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-4 py-2.5 rounded-xl bg-outwit-yellow hover:bg-yellow-400 text-outwit-black font-extrabold text-sm uppercase disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {saving ? 'Adding...' : `Add ${acceptedCount} questions`}
         </button>

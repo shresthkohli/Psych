@@ -76,9 +76,11 @@ export const LandingPage: React.FC = () => {
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-12 relative z-10">
         <div className="max-w-3xl mx-auto text-center space-y-6">
           {/* Badge */}
+          <div>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-outwit-dark border border-outwit-yellow/40 text-xs font-mono font-bold tracking-wider text-outwit-yellow shadow-md uppercase">
             <Sparkles className="w-4 h-4 text-outwit-yellow" />
             <span>{APP_INFO.BADGE}</span>
+          </div>
           </div>
 
           {/* Huge title */}
